@@ -1,0 +1,276 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      left: 12rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left: 12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Admin</h3>
+
+      <button
+        ng-if="!isAdminEdit"
+        tooltip-placement="top"
+        uib-tooltip="Update Admin's Status"
+        type="button"
+        class="btn btn-warning"
+        ng-click="updateEditStatus()"
+      >
+        <img src="images/edit-icon.png" alt="" style="width: 21px" />
+      </button>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      <div>
+        <img
+          style="height: 255px; border-radius: 29px"
+          ng-if="admin.image.length>0"
+          src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{admin.image}}"
+          alt=""
+        />
+        <img
+          style="height: 255px; border-radius: 29px"
+          ng-if="!admin.image || admin.image.length==0"
+          src="images/dummy-user.jpg"
+          alt=""
+        />
+      </div>
+      <div
+        style="
+          margin-left: 2rem;
+          width: 70%;
+          padding: 15px 30px;
+          border-radius: 18px;
+        "
+        ng-class="isAdminEdit?'brandContainerUpdate':''"
+      >
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Name:</label>
+          <h3 style="position: relative; bottom: 23px">{{admin.name}}</h3>
+        </div>
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Email:</label>
+          <h3 style="position: relative; bottom: 23px">{{admin.email}}</h3>
+        </div>
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Password:</label>
+          <h3 style="position: relative; bottom: 23px">XXXXXX</h3>
+        </div>
+        <div
+          class="form-group"
+          style="display: flex; align-items: center; column-gap: 10px"
+        >
+          <label>Brand Admin Of :</label>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: auto auto;
+              grid-column-gap: 30px;
+              position: relative;
+              left: 25px;
+            "
+          >
+            <div
+              ng-if="!isAdminEdit"
+              ng-repeat="entity in admin.entityDetails"
+              style="display: flex; align-items: center; column-gap: 10px"
+            >
+              <p
+                style="font-size: 19px; margin-bottom: 7px"
+                ng-if="!isAdminEdit"
+                id="{{entity.entityId}}"
+              >
+                {{entity.entityName}}
+              </p>
+            </div>
+            <div
+              ng-if="isAdminEdit"
+              style="display: flex; align-items: center; column-gap: 10px"
+            >
+              <oi-select
+                oi-options="brand.name for brand in brands track by brand._id"
+                ng-model="selectedBrands"
+                multiple
+                oi-select-options="{
+                    newItem: 'prompt'
+                }"
+                ng-change="updateBrands(selectedBrands)"
+                placeholder="Select Brands"
+              >
+              </oi-select>
+            </div>
+          </div>
+        </div>
+        <div
+          class="form-group"
+          style="display: flex; align-items: center; column-gap: 10px"
+        >
+          <label>Permissions: </label>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: auto auto;
+              grid-column-gap: 30px;
+              position: relative;
+              left: 25px;
+            "
+          >
+            <div
+              ng-if="!isAdminEdit"
+              ng-repeat="permission in admin.permissions"
+              style="display: flex; align-items: center; column-gap: 10px"
+            >
+              <p
+                style="font-size: 19px; margin-bottom: 7px"
+                ng-if="!isAdminEdit"
+                id="{{$index}}"
+              >
+                {{permission}}
+              </p>
+            </div>
+            <div
+              ng-if="isAdminEdit"
+              ng-repeat="permission in editPermissions"
+              style="display: flex; align-items: center; column-gap: 10px"
+            >
+              <input
+                ng-if="isAdminEdit"
+                id="{{$index}}"
+                type="checkbox"
+                ng-model="permission.value"
+                ng-value="permission.value"
+              />
+              <label ng-if="isAdminEdit" for="{{$index}}" style="margin: 0"
+                >{{permission.key}}</label
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          style="height: 70px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Admin Status:</label>
+          <div class="d-flex justify-content-between" style="width: 243px">
+            <button
+              class="btn btn-success d-inline"
+              ng-if="!isAdminEdit && admin.status=='active'"
+            >
+              Active
+            </button>
+
+            <button
+              ng-class="toggle.switch=='active'?'activeBtn':'blankBtn'"
+              ng-click="toggleAdminStatus('active')"
+              ng-if="isAdminEdit"
+            >
+              Activate Admin
+            </button>
+            <button
+              ng-class="toggle.switch=='inactive'?'inactiveBtn':'blankBtn'"
+              ng-click="toggleAdminStatus('inactive')"
+              ng-if="isAdminEdit"
+            >
+              Ban Admin
+            </button>
+            <button
+              class="btn btn-danger d-inline"
+              ng-if="!isAdminEdit && admin.status=='inactive'"
+            >
+              Banned
+            </button>
+          </div>
+        </div>
+        <div
+          ng-if="isAdminEdit"
+          style="height: 70px"
+          class="d-flex flex-column justify-content-between mt-4"
+        >
+          <label>Delete Admin:</label>
+
+          <button
+            ng-click="toggleDelete()"
+            ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+            style="width: 150px"
+          >
+            Delete
+          </button>
+        </div>
+        <button
+          ng-click="updateAdmin(admin._id)"
+          ng-if="isAdminEdit"
+          class="btn btn-warning mt-4"
+          style="width: 150px; color: white"
+        >
+          Update Admin
+        </button>
+        <button
+          ng-click="cancelUpdate()"
+          ng-if="isAdminEdit"
+          class="btn cancel mt-4"
+          style="width: 150px; color: white"
+        >
+          Cancel Update
+        </button>
+      </div>
+    </div>
+  </div>
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to change the status of Admin?</h4>
+        <p>Selected Status: <b>{{status}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+  <script type="text/ng-template" id="deleteStatus.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to Delete this Admin?</h4>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Yes</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">No</button>
+    </div>
+  </script>
+</div>

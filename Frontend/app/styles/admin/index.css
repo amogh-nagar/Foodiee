@@ -1,0 +1,33 @@
+.brandListItems {
+  cursor: pointer;
+  width: 199px;
+  background-color: #724646;
+  border-radius: 31px;
+  height: 220px;
+  
+}
+.brandListItems:hover {
+  box-shadow: 2px 3px 21px rgb(0 0 0 / 50%);
+}
+.brandContainer {
+  padding: 24px 1px;
+  width: 64%;
+  padding: 15px 30px;
+  border-radius: 18px;
+}
+.brandContainerUpdate {
+ 
+  background-color: #424141;
+}
+
+.container {
+    width: 50px;
+    margin: 50px auto;
+}
+.brandListItems:before{
+    
+}
+.chart {
+  width: 500px;
+  height: 500px;
+ }

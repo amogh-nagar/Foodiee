@@ -1,0 +1,171 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+    left:12rem;
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left:12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Brand's Dishes</h3>
+      <ul style="list-style: none; margin: 0">
+        <li style="background-color: white" class="nav-item dropdown">
+          <a
+            style="background-color: #8a2b06"
+            class="nav-link dropdown-toggle"
+            href="#"
+            ng-click="toggleDrp()"
+            data-toggle="dropdown"
+          >
+            Categories
+          </a>
+
+          <ul
+            ng-if="openDropDown"
+            style="display: block !important"
+            class="dropdown-menu"
+          >
+            <li
+              ng-init="parentIndex=$index"
+              ng-repeat="supercategory in superCategories |filter:'' track by $index"
+            >
+              <a
+                ng-click="updateSingleCategory(supercategory)"
+                class="dropdown-item"
+              >
+                {{supercategory.name}}
+              </a>
+              <ul
+                ng-if="categories.length>0 && categories[0].dishSuperCategoryId==supercategory._id"
+                class="submenu dropdown-menu"
+              >
+                <li
+                  ng-repeat="category in categories | filter:'' track by $index"
+                >
+                  <a
+                    ng-click="updateCategoryEntered(category, supercategory)"
+                    class="dropdown-item"
+                    >{{category.name}}</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li ng-init="parentIndex=$index">
+              <a
+                class="dropdown-item"
+                ng-click="updateCategoryEntered('')"
+                href="#"
+              >
+                All Items</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <ul
+      style="
+        list-style: none;
+        margin: 1rem;
+        padding: 0;
+        display: grid;
+        row-gap: 19px;
+      "
+    >
+      <li
+        class="cardItems"
+        ng-repeat="dish in outletsDishes |filter:'' track by dish._id"
+      >
+        <div class="outletListItems">
+          <div class="d-flex justify-content-between align-items-center">
+            <img
+              style="width: 115px; border-radius: 50%"
+              ng-if="!dish.image || dish.image.length==0"
+              src="images/dummy-dishImage.jpg"
+              alt=""
+            />
+            <img
+              style="width: 115px; border-radius: 50%;    height: 115px;"
+              ng-if="dish.image.length>0"
+              ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.image}}"
+              alt=""
+            />
+            <div style="margin-left: 19px">
+              <h3>{{dish.name}}</h3>
+              <div class="description">{{dish.description}}</div>
+              <div class="price">₹{{dish.price}}</div>
+              <div class="description">
+                {{dish.superCategory.name}} | {{dish.category.name}}
+              </div>
+            </div>
+          </div>
+          <div style="margin: 1rem">
+            <form class="form">
+              <div class="input">
+                <label for="amount">Amount</label>
+                <div class="addSub">
+                  <button
+                    style="padding: 0; width: 44px; height: 33px"
+                    ng-click="addSub('-',dish._id)"
+                  >
+                    -
+                  </button>
+                  <span class="dishQuantity"
+                    >{{dishesAddSub[dish._id]?dishesAddSub[dish._id]:0}}</span
+                  >
+                  <button
+                    style="padding: 0; width: 44px; height: 33px"
+                    ng-click="addSub('+',dish._id)"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <button
+                ng-click="submitHandler(dish._id,dish.name,dish.price,dishesAddSub[dish._id]?dishesAddSub[dish._id]:0,dish.taxes)"
+              >
+                + Add
+              </button>
+            </form>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div
+    style="margin-top:4rem;display: flex; align-items: center; justify-content: center"
+  >
+    <ul
+      uib-pagination
+      total-items="totalItems"
+      ng-model="currentPage"
+      items-per-page="itemsPerPage"
+      boundary-links="true" force-ellipses="true"
+      max-size="5" class="pagination-sm"
+    ></ul>
+  </div>
+  </div>
+ 
+</div>

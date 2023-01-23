@@ -1,0 +1,378 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+    left:12rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+    left:12rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Dish</h3>
+
+      <button
+        ng-if="!isdishEdit && permissions.includes('isUpdateDish')"
+        tooltip-placement="top"
+        uib-tooltip="Update Dish's Status"
+        type="button"
+        class="btn btn-warning"
+        ng-click="updateEditStatus()"
+      >
+        <img src="images/edit-icon.png" alt="" style="width: 21px" />
+      </button>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      
+      <div>
+        <img
+          style="
+            width: 272px;
+            height: 255px;
+            border-radius: 29px;
+            object-fit: cover;
+          "
+          ng-if="dish.image.length>0"
+          src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.image}}"
+          alt=""
+        />
+        <img
+          style="
+            width: 272px;
+            height: 255px;
+            border-radius: 29px;
+            object-fit: cover;
+          "
+          ng-if="!dish.image || dish.image.length==0"
+          src="images/dummy-dishImage.jpg"
+          alt=""
+        />
+        <form>
+          <div
+            ng-if="isdishEdit"
+            style="margin-left: 14px; margin-top: 24px"
+            class="d-flex align-items-start flex-column"
+          >
+            <label for="dishImage">Select an Image: </label>
+            <input
+              data-file
+              id="dishImage"
+              name="image"
+              ng-model="dishImage"
+              type="file"
+              fileread="image"
+            />
+            <br />
+            <!-- <p>
+            Or
+            <button
+              style="
+                padding: 3px 14px;
+                border: 0px;
+                border-radius: 13px;
+                font-weight: 700;
+              " ng-click="removeImage()"
+            >
+              Remove Image
+            </button>
+          </p> -->
+            <form action>
+              <img style="width: 280px" ng-src="{{ image }}" />
+            </form>
+          </div>
+        </form>
+      </div>
+      <div
+        style="
+          padding-bottom: 43px !important;
+          margin-left: 3rem;
+          width: 64%;
+          padding: 15px 30px;
+          border-radius: 18px;
+        "
+        ng-class="isdishEdit?'brandContainerUpdate':''"
+      >
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Name:</label>
+          <h3 ng-if="!isdishEdit" style="position: relative; bottom: 23px">
+            {{dish.name}}
+          </h3>
+          <input
+            type="text"
+            ng-model="dish.name"
+            ng-if="isdishEdit"
+            value="{{dish.name}}"
+            style="position: relative; bottom: 23px; padding: 5px"
+          />
+        </div>
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Price:</label>
+          <h3 ng-if="!isdishEdit" style="position: relative; bottom: 23px">
+            {{dish.price}}
+          </h3>
+          <input
+            type="number"
+            ng-if="isdishEdit"
+            ng-model="dish.price"
+            value="{{dish.price}}"
+            style="position: relative; bottom: 23px; padding: 5px"
+          />
+        </div>
+
+        <div class="d-flex flex-column justify-content-between">
+          <label>Description:</label>
+          <h3 ng-if="!isdishEdit" style="position: relative">
+            {{dish.description}}
+          </h3>
+          <textarea
+            rows="4"
+            cols="60"
+            type="text"
+            name="description"
+            ng-if="isdishEdit"
+            ng-model="dish.description"
+          ></textarea>
+        </div>
+        <div
+          style="margin-top: 10px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Super Category:</label>
+          <h3 ng-if="!isdishEdit" style="position: relative">
+            {{dish.superCategory.name}}
+          </h3>
+          <input
+            type="text"
+            ng-if="isdishEdit"
+            ng-model="dish.superCategory.name"
+            value="{{dish.superCategory.name}}"
+            style="padding: 5px"
+          />
+        </div>
+        <div
+          style="margin-top: 10px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Category:</label>
+          <h3 ng-if="!isdishEdit" style="position: relative">
+            {{dish.category.name}}
+          </h3>
+          <input
+            type="text"
+            ng-if="isdishEdit"
+            ng-model="dish.category.name"
+            value="{{dish.category.name}}"
+            style="padding: 5px"
+          />
+        </div>
+        <div
+          style="height: 70px; position: relative; top: 15px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Dish Status:</label>
+          <div class="d-flex justify-content-between" style="width: 243px">
+            <button
+              class="btn btn-success d-inline"
+              ng-if="!isdishEdit && dish.status=='active'"
+            >
+              Active
+            </button>
+
+            <button
+              ng-class="toggle.switch=='active'?'activeBtn':'blankBtn'"
+              ng-click="toggleDishStatus('active')"
+              ng-if="isdishEdit"
+            >
+              Activate Dish
+            </button>
+            <button
+              ng-class="toggle.switch=='inactive'?'inactiveBtn':'blankBtn'"
+              ng-click="toggleDishStatus('inactive')"
+              ng-if="isdishEdit"
+            >
+              Ban Dish
+            </button>
+            <button
+              class="btn btn-danger d-inline"
+              ng-if="!isdishEdit && dish.status=='inactive'"
+            >
+              Banned
+            </button>
+          </div>
+        </div>
+        <div
+          ng-if="isdishEdit"
+          style="height: 70px; position: relative; top: 15px"
+          class="d-flex flex-column justify-content-between mt-4"
+        >
+          <label>Delete Dish:</label>
+
+          <button
+            ng-click="toggleDelete()"
+            ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+            style="width: 150px"
+          >
+            Delete
+          </button>
+        </div>
+        <div  class="form-group d-flex justify-content-between flex-column">
+          <label>Taxes</label>
+          <div ng-if="isdishEdit" style="width: 100%">
+            <div
+              style="padding: 0; column-gap: 10px"
+              class="d-flex align-items-center container-fluid"
+            >
+              <select
+                style="width: 105px"
+                ng-model="itemTax.value"
+                ng-options="tax.name for tax in oldTaxes"
+              ></select>
+              <input
+                style="height: 40px; padding: 8px"
+                placeholder="Percent Amount"
+                type="number"
+                ng-change="change()"
+                ng-model="percentAmount.value"
+              />
+              <button
+                style="
+                  height: 40px;
+                  font: inherit;
+                  cursor: pointer;
+                  background-color: #8a2b06;
+                  border: 1px solid #8a2b06;
+                  color: white;
+                  padding: 0.25rem 2rem;
+                  border-radius: 20px;
+                  font-weight: bold;
+                "
+                ng-click="addNewTax()"
+              >
+                + Add
+              </button>
+            </div>
+            <div
+              style="
+                margin-top: 12px;
+                width: 27rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #eaeac1;
+                padding: 10px;
+              " 
+              ng-repeat="tax in taxes"
+              ng-click="removeTax(tax)" 
+            >
+              <p class="description" style="padding: 0; margin: 0">
+                {{tax.name}}
+              </p>
+              <p class="description" style="padding: 0; margin: 0">
+                @ {{tax.percentAmount}}%
+              </p>
+            </div>
+            <div
+              style="width: 27rem; margin-top: 13px"
+              class="d-flex justify-content-end"
+            >
+              <button class="btn btn-primary" ng-click="createTax()">
+                Create Tax
+              </button>
+            </div>
+          </div>
+          <div ng-if="!isdishEdit">
+            <div
+              style="
+                margin-top: 12px;
+                width: 27rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #eaeac1;
+                padding: 10px;
+              " 
+              ng-repeat="tax in dish.taxes"
+            >
+              <p class="description" style="padding: 0; margin: 0">
+                {{tax.name}}
+              </p>
+              <p class="description" style="padding: 0; margin: 0">
+                @ {{tax.percentAmount}}%
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          ng-click="updateDish(dish._id)"
+          ng-if="isdishEdit"
+          class="btn btn-warning mt-4"
+          style="width: 150px; color: white; position: relative; top: 15px"
+        >
+          Update Dish
+        </button>
+        <button
+          ng-click="cancelUpdate()"
+          ng-if="isdishEdit"
+          class="btn cancel mt-4"
+          style="width: 150px; color: white; position: relative; top: 15px"
+        >
+          Cancel Update
+        </button>
+      </div>
+    </div>
+  </div>
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to change the status of the Dish?</h4>
+        <p>Selected Status: <b>{{status}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+  <script type="text/ng-template" id="deleteStatus.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to Delete this Dish?</h4>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Yes</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">No</button>
+    </div>
+  </script>
+</div>

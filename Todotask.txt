@@ -1,0 +1,51 @@
+Indexes in mongodb
+.explain()
+Indexing in apis
+Multiple indeces
+Priority order
+Time with or without indexes
+Responsiveness
+
+
+
+
+Outlet
+Create orders
+Update orders
+History
+Take email id and number of customer/
+CLI Login(No Signup)/
+Super Category(New Delhi)->Category()->/
+Category update
+Synchronise add number
+Secret key diff for all users
+
+Select item/multiple -> date range -> graph,hourly, items sell
+brand sell-> total range sell
+top 3 items sold for each brand  -> date range
+
+Amazon s3, express-file-uploader
+Image , amazon sqsq
+System design
+HashMap - uploadingin memory
+Debouncing -use it
+Separate mailing server -  amazon sqsq
+Image uploading in bucket
+Redis server/Caching, memcached(facebook version of redis), how to start,clear, why is cached used
+CDN(Looks for geo location and searched nearest server)
+Push order into sqsq, and hit websocket from their, if socket black, have a polling mechanism for fallback
+projection in reporting
+cursors in batches in mongodb
+calculation in cursors not in find
+Signup for admin
+
+
+Compression of image
+order place - sqs(Status change) - API insert sqs, date inseet through sqs
+Where to use redis
+
+Architecture change
+Left nav Bar for Navigation
+Brands permission removal 
+dish supercategory,category collection
+brand's users 

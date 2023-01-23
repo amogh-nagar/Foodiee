@@ -1,0 +1,439 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      left: 12rem;
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left: 12rem;
+
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">New Dish</h3>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      <form name="dishForm" class="d-flex" novalidate style="width: 100%">
+        <div style="width: 77%">
+          <div
+            class="form-group"
+            ng-class="{'has-error':dishForm.name.$invalid && (dishForm.name.$dirty || submitted)}"
+          >
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              ng-model="dish.name"
+              placeholder="Dish Name"
+              ng-minlength="3"
+              ng-required="true"
+            />
+            <p
+              ng-show="dishForm.name.$error.required && (dishForm.name.$dirty || submitted)"
+              class="text-danger"
+            >
+              Dish Name is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="dishForm.name.$error.minlength && (dishForm.name.$dirty || submitted)"
+            >
+              Dish Name is too short
+            </p>
+          </div>
+          <div
+            class="form-group"
+            ng-class="{'has-error':dishForm.price.$invalid && (dishForm.price.$dirty || submitted)}"
+          >
+            <label for="price">Price</label>
+            <input
+              ng-change="updateProgress('price')"
+              type="number"
+              name="price"
+              id="price"
+              class="form-control"
+              placeholder="Dish Price"
+              ng-required="true"
+              ng-model="dish.price"
+            />
+            <p
+              ng-show="dishForm.price.$error.required && (dishForm.price.$dirty || submitted)"
+              class="text-danger"
+            >
+              Dish Price is required
+            </p>
+          </div>
+          <div
+            ng-class="{'has-error':dishForm.description.$invalid && (dishForm.description.$dirty || submitted)}"
+            class="form-group"
+          >
+            <label for="description">Description</label>
+            <textarea
+              type="text"
+              name="description"
+              rows="4"
+              cols="60"
+              id="description"
+              class="form-control"
+              ng-model="dish.description"
+              placeholder="Dish Description"
+              ng-required="true"
+            ></textarea>
+            <p
+              class="text-danger"
+              ng-show="dishForm.description.$error.required && (dishForm.description.$dirty || submitted)"
+            >
+              Dish Description is required
+            </p>
+          </div>
+
+          <div
+            class="form-group d-flex justify-content-between flex-column"
+            style="width: 170px"
+          >
+            <label>Dish Status</label>
+            <div style="width: 100%">
+              <button
+                class="btn d-inline"
+                ng-click="updateDishStatus('active')"
+                ng-class="status=='active'?'activeBtn':'blankBtn'"
+              >
+                Active
+              </button>
+              <button
+                ng-class="status=='inactive'?'inactiveBtn':'blankBtn'"
+                ng-click="updateDishStatus('inactive')"
+                class="btn d-inline"
+              >
+                InActive
+              </button>
+            </div>
+          </div>
+          <div class="form-group d-flex justify-content-between flex-column">
+            <label>Dish SuperCategory</label>
+            <div class="d-flex align-items-center">
+              <select
+                ng-if="!isSuperCreate"
+                style="padding: 8px"
+                ng-model="dish.superCategory"
+                ng-change="getSubCategories(dish.superCategory)"
+                ng-options="supercategory.name for supercategory in superCategories"
+              >
+                <option value="">Select Existing Super Category</option>
+              </select>
+
+              <input
+                type="text"
+                name="superCategory"
+                id="superCategory"
+                class="form-control"
+                placeholder="Dish SuperCategory"
+                ng-required="true"
+                ng-if="isSuperCreate"
+                ng-model="dish.superCategory.name"
+              />
+              <!-- <div> -->
+              <p
+                style="
+                  width: 73px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  margin-top: 10px;
+                  padding: 0px 15px;
+                "
+              >
+                Or
+              </p>
+              <div class="d-flex">
+                <button class="btn btn-primary" ng-click="changeNew('super')">
+                  Create New
+                </button>
+                <button
+                  ng-if="isSuperCreate"
+                  class="btn btn-primary"
+                  ng-click="cancelNew('super')"
+                >
+                  Cancel
+                </button>
+              </div>
+              <!-- </div> -->
+            </div>
+            <p
+              ng-show="dishForm.superCategory.$error.required && (dishForm.superCategory.$dirty || submitted)"
+              class="text-danger"
+            >
+              Dish SuperCategory is required
+            </p>
+          </div>
+          <div class="form-group d-flex justify-content-between flex-column">
+            <label>Dish Category</label>
+            <div class="d-flex align-items-center">
+              <select
+                ng-if="!isCreate"
+                style="padding: 8px"
+                ng-model="dish.category"
+                ng-change="get()"
+                ng-options="ctg.name for ctg in categories"
+              >
+                <option value="">Select Existing Category</option>
+              </select>
+              <input
+                type="text"
+                name="category"
+                id="category"
+                class="form-control"
+                placeholder="Dish Category"
+                ng-required="true"
+                ng-model="dish.category.name"
+                ng-if="isCreate"
+              />
+              <!-- <div> -->
+              <p
+                style="
+                  width: 73px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  margin-top: 10px;
+                  padding: 0px 15px;
+                "
+              >
+                Or
+              </p>
+              <div class="d-flex">
+                <button class="btn btn-primary" ng-click="changeNew('sub')">
+                  Create New
+                </button>
+                <button
+                  ng-if="isCreate"
+                  class="btn btn-primary"
+                  ng-click="cancelNew('sub')"
+                >
+                  Cancel
+                </button>
+              </div>
+              <!-- </div> -->
+            </div>
+            <p
+              ng-show="dishForm.category.$error.required && (dishForm.category.$dirty || submitted)"
+              class="text-danger"
+            >
+              Dish Category is required
+            </p>
+          </div>
+          <div
+            class="form-group d-flex justify-content-between flex-column"
+            style="width: 170px"
+          >
+            <label>Delete Status</label>
+            <div style="width: 100%">
+              <button
+                ng-click="toggleDelete()"
+                ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+                class="btn d-inline"
+              >
+                {{isdeleted?'Deleted':'Not Deleted'}}
+              </button>
+            </div>
+          </div>
+          <div class="form-group d-flex justify-content-between flex-column">
+            <label>Taxes</label>
+            <div style="width: 100%">
+              <div
+                style="padding: 0; column-gap: 10px"
+                class="d-flex align-items-center container-fluid"
+              >
+                <select
+                  style="width: 105px"
+                  ng-model="itemTax"
+                  ng-options="tax.name for tax in oldTaxes"
+                ></select>
+                <input
+                  style="height: 40px; padding: 8px"
+                  placeholder="Percent Amount"
+                  type="text"
+                  ng-model="percentAmount"
+                />
+                <button
+                  style="
+                    height: 40px;
+                    font: inherit;
+                    cursor: pointer;
+                    background-color: #8a2b06;
+                    border: 1px solid #8a2b06;
+                    color: white;
+                    padding: 0.25rem 2rem;
+                    border-radius: 20px;
+                    font-weight: bold;
+                  "
+                  ng-click="addNewTax()"
+                >
+                  + Add
+                </button>
+              </div>
+              <div 
+                style="
+                  margin-top: 12px;
+                  width: 27rem;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  background-color: #eaeac1;
+                  padding: 10px;
+                " 
+                ng-repeat="tax in taxes"
+                ng-click="updateTax(tax)"
+                >
+                <p class="description" style="padding: 0; margin: 0">
+                  {{tax.name}}
+                </p>
+                <p class="description" style="padding: 0; margin: 0">
+                  @ {{tax.percentAmount}}%
+                </p>
+              </div>
+              <div
+                style="width: 27rem; margin-top: 13px"
+                class="d-flex justify-content-end"
+              >
+                <button class="btn btn-primary" ng-click="createTax()">
+                  Create Tax
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button
+            ng-click="createDish()"
+            ng-disabled="dishForm.$invalid"
+            class="btn btn-primary btn-md rounded mt-2"
+          >
+            Create Dish
+          </button>
+        </div>
+        <div style="width: 38%; padding-left: 39px">
+          <label for="dishImage">Select an Image: </label>
+          <input
+            data-file
+            id="dishImage"
+            name="image"
+            ng-model="dishImage"
+            type="file"
+            fileread="image"
+          />
+          <form action>
+            <img style="width: 280px" ng-src="{{ image }}" />
+          </form>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script type="text/ng-template" id="createTax.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Create Tax</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <form name="taxForm" class="d-flex" novalidate style="width: 100%">
+        <div style="width: 77%">
+          <div
+            class="form-group"
+            ng-class="{'has-error':taxForm.name.$invalid && (taxForm.name.$dirty || submitted)}"
+          >
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              ng-model="name"
+              placeholder="Tax Name"
+              ng-required="true"
+            />
+            <p
+              ng-show="taxForm.name.$error.required && (taxForm.name.$dirty || submitted)"
+              class="text-danger"
+            >
+              Tax Name is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="taxForm.name.$error.minlength && (taxForm.name.$dirty || submitted)"
+            >
+              Tax Name is too short
+            </p>
+          </div>
+          <div
+            class="form-group"
+            ng-class="{'has-error':taxForm.price.$invalid && (taxForm.price.$dirty || submitted)}"
+          >
+            <label for="price">Percent Range</label>
+            <div class="d-flex justify-content-between">
+              <div>
+                <p>From</p>
+
+            <input style="
+            width: 146px;
+        "
+            type="number"
+                name="percentFrom"
+                id="percentFrom"
+               class="form-control"
+                placeholder="Tax Price"
+                ng-required="true"
+                ng-model="rangeFrom"
+              />
+              </div>
+              <div>
+                <p>To</p>
+
+            <input style="
+            width: 146px;
+        "
+            type="number"
+                name="percentTo"
+                id="percentTo"
+               class="form-control"
+                placeholder="Tax Price"
+                ng-required="true"
+                ng-model="rangeTo"
+              />
+              </div>
+            </div>
+            <p
+              ng-show="taxForm.price.$error.required && (taxForm.price.$dirty || submitted)"
+              class="text-danger"
+            >
+              Tax Price is required
+            </p>
+          </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+</div>

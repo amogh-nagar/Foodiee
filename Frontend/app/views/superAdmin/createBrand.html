@@ -1,0 +1,186 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      left:12rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left: 12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">New Brand</h3>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      <form class="d-flex" name="brandForm" novalidate style="width: 100%">
+        <div style="width: 77%">
+          <div
+            class="form-group"
+            ng-class="{'has-error':brandForm.name.$invalid && (brandForm.name.$dirty || submitted)}"
+          >
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              ng-model="brand.name"
+              placeholder="Brand Name"
+              ng-minlength="3"
+              ng-required="true"
+            />
+            <p
+              ng-show="brandForm.name.$error.required && (brandForm.name.$dirty || submitted)"
+              class="text-danger"
+            >
+              Brand Name is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="brandForm.name.$error.minlength && (brandForm.name.$dirty || submitted)"
+            >
+              Brand Name is too short
+            </p>
+            
+          </div>
+          <div
+            class="form-group"
+          >
+            <label for="name">Add Admins</label>
+            <div
+              style="display: flex; align-items: center; column-gap: 10px"
+            >
+              <oi-select
+                oi-options="admin.name for admin in admins track by admin._id"
+                ng-model="selectedAdmins"
+                multiple
+                oi-select-options="{
+                    newItem: 'prompt'
+                }"
+                ng-change="updateAdmins(selectedAdmins)"
+                placeholder="Select Admins"
+              >
+              </oi-select>
+            </div>
+          </div>
+          <div
+            class="form-group"
+            ng-class="{'has-error':brandForm.description.$invalid && (brandForm.description.$dirty || submitted)}"
+          >
+            <label for="description">Description</label>
+            <textarea
+              type="text"
+              id="description"
+              name="description"
+              class="form-control"
+              ng-model="brand.description"
+              placeholder="Brand Description"
+              ng-minlength="3"
+              rows="4"
+              cols="60"
+              ng-required="true"
+            ></textarea>
+            <p
+              ng-show="brandForm.description.$error.required && (brandForm.description.$dirty || submitted)"
+              class="text-danger"
+            >
+              Brand description is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="brandForm.description.$error.minlength && (brandForm.description.$dirty || submitted)"
+            >
+              Brand description is too short
+            </p>
+            <p
+              class="text-danger"
+              ng-show="brandForm.description.$error.maxlength && (brandForm.description.$dirty || submitted)"
+            >
+              Brand description is too long
+            </p>
+          </div>
+          <div
+            class="form-group d-flex justify-content-between flex-column"
+            style="width: 170px"
+          >
+            <label>Brand Status</label>
+            <div style="width: 100%">
+              <button
+                class="btn d-inline"
+                ng-click="updateBrandStatus('active')"
+                ng-class="status=='active'?'activeBtn':'blankBtn'"
+              >
+                Active
+              </button>
+              <button
+                ng-class="status=='inactive'?'inactiveBtn':'blankBtn'"
+                ng-click="updateBrandStatus('inactive')"
+                class="btn d-inline"
+              >
+                InActive
+              </button>
+            </div>
+          </div>
+          <div
+            class="form-group d-flex justify-content-between flex-column"
+            style="width: 170px"
+          >
+            <label>Delete Status</label>
+            <div style="width: 100%">
+              <button
+                ng-click="toggleDelete()"
+                ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+                class="btn d-inline"
+              >
+                {{isdeleted?'Deleted':'Not Deleted'}}
+              </button>
+            </div>
+          </div>
+          <button
+            ng-click="createBrand()"
+            ng-disabled="brandForm.$invalid"
+            class="btn btn-primary btn-md rounded mt-2"
+          >
+            Create Brand
+          </button>
+        </div>
+        <div style="width: 38%; padding-left: 39px">
+          <label for="myFileField">Select an Image: </label>
+          <input
+            data-file
+            id="id_image"
+            name="image"
+            ng-model="brandImage"
+            type="file"
+            fileread="image"
+          />
+          <form action>
+            <img style="width: 280px" ng-src="{{ image }}" />
+          </form>
+        </div>
+        <br />
+      </form>
+    </div>
+  </div>
+</div>

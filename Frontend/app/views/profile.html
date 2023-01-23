@@ -1,0 +1,218 @@
+<div>
+  <div ng-include="includes/cover.html"></div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      left:12rem;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+    
+    top: 12rem;
+
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left:12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Details</h3>
+
+      <button
+        ng-if="!isProfileEdit"
+        tooltip-placement="top"
+        uib-tooltip="Update Profile Details"
+        type="button"
+        class="btn btn-warning"
+        ng-click="updateEditStatus()"
+      >
+        <img src="images/edit-icon.png" alt="" style="width: 21px" />
+      </button>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      <div>
+        <img
+          style="
+            width: 272px;
+            height: 255px;
+            border-radius: 29px;
+            object-fit: cover;
+          "
+          ng-if="user.image.length>0"
+          src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{user.image}}"
+          alt=""
+        />
+        <img
+          style="
+            width: 272px;
+            height: 255px;
+            border-radius: 29px;
+            object-fit: cover;
+          "
+          ng-if="!user.image || user.image.length==0"
+          src="images/dummy-user.jpg"
+          alt=""
+        />
+
+        <form>
+          <div
+            ng-if="isProfileEdit"
+            style="margin-left: 14px; margin-top: 24px"
+            class="d-flex align-items-start flex-column"
+          >
+            <label for="userImage">Select an Image: </label>
+            <input
+              data-file
+              id="userImage"
+              name="image"
+              ng-model="userImage"
+              type="file"
+              fileread="image"
+            />
+            <br />
+
+            <form action>
+              <img style="width: 280px" ng-src="{{ image }}" />
+            </form>
+          </div>
+        </form>
+      </div>
+      <div
+        style="
+          padding-bottom: 43px !important;
+          margin-left: 3rem;
+          width: 64%;
+          padding: 15px 30px;
+          border-radius: 18px;
+        "
+        ng-class="isProfileEdit?'brandContainerUpdate':''"
+      >
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Name:</label>
+          <h3 ng-if="!isProfileEdit" style="position: relative; bottom: 23px">
+            {{user.name}}
+          </h3>
+          <input
+            type="text"
+            ng-model="user.name"
+            ng-if="isProfileEdit"
+            value="{{user.name}}"
+            style="position: relative; bottom: 23px; padding: 5px"
+          />
+        </div>
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label for="email">Email</label>
+          <h3 ng-if="!isProfileEdit" style="position: relative; bottom: 23px">
+            {{user.email}}
+          </h3>
+          <input
+            ng-if="isProfileEdit"
+            type="email"
+            name="email"
+            id="email"
+            style="position: relative; bottom: 23px; padding: 5px"
+            placeholder="Your Email"
+            ng-required="true"
+            ng-model="user.email"
+          />
+          <!-- <p
+            ng-show="userForm.email.$error.required && (userForm.email.$dirty || submitted)"
+            class="text-danger"
+          >
+            Email is required
+          </p>
+          <p
+            class="text-danger"
+            ng-show="userForm.email.$error.email && (userForm.email.$dirty || submitted)"
+          >
+            Enter a valid email
+          </p> -->
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <div class="d-flex align-item-center justify-content-between">
+            <label ng-if="isProfileEdit" for="password">Update Password</label>
+            <div ng-if="isProfileEdit">
+              <button class="btn btn-primary" ng-click="changePassword()">
+                Update Password
+              </button>
+            </div>
+          </div>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            ng-if="isProfileEdit && isUpdatePassword"
+            validate-password="user.userPassword"
+            class="form-control"
+            ng-model="user.userPassword"
+            placeholder="User Password"
+            ng-required="true"
+          />
+          <!-- <p
+          class="text-danger"
+          ng-show="outletForm.password.$error.required && (outletForm.password.$dirty || submitted)"
+        >
+          Outlet password is required
+        </p>
+        <p
+          class="text-danger"
+          ng-show="outletForm.password.$error.validity && (outletForm.password.$dirty || submitted)"
+        >
+          Password must contain one Lowercase, One UpperCase, One Number and
+          One Symbol
+        </p> -->
+        </div>
+
+        <button
+          ng-click="updateProfile()"
+          ng-if="isProfileEdit"
+          class="btn btn-warning mt-4"
+          style="width: 150px; color: white; position: relative; top: 15px"
+        >
+          Update Profile
+        </button>
+        <button
+          ng-click="cancelUpdate()"
+          ng-if="isProfileEdit"
+          class="btn cancel mt-4"
+          style="width: 150px; color: white; position: relative; top: 15px"
+        >
+          Cancel Update
+        </button>
+      </div>
+    </div>
+  </div>
+  <script type="text/ng-template" id="updatePassword.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to change the Password?</h4>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+</div>

@@ -1,0 +1,235 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      left: 12rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      left: 12rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Brand</h3>
+
+      <button
+        ng-if="!isbrandEdit"
+        tooltip-placement="top"
+        uib-tooltip="Update Brand's Status"
+        type="button"
+        class="btn btn-warning"
+        ng-click="updateEditStatus()"
+      >
+        <img src="images/edit-icon.png" alt="" style="width: 21px" />
+      </button>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      <div>
+        <div>
+          <img
+            style="width: 338px; height: 255px; border-radius: 29px"
+            ng-if="brand.image.length>0"
+            src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{brand.image}}"
+            alt=""
+          />
+          <img
+            style="width: 338px; height: 255px; border-radius: 29px"
+            ng-if="!brand.image || brand.image.length==0"
+            src="images/dummy-brandImage.jpg"
+            alt=""
+          />
+        </div>
+        <form>
+          <div
+            ng-if="isbrandEdit"
+            style="margin-left: 14px; margin-top: 24px"
+            class="d-flex align-items-start flex-column"
+          >
+            <label for="brandImage">Select an Image: </label>
+            <input
+              data-file
+              id="brandImage"
+              name="image"
+              ng-model="brandImage"
+              type="file"
+              fileread="image"
+            />
+            <br />
+            <!-- <p>
+          Or
+          <button
+            style="
+              padding: 3px 14px;
+              border: 0px;
+              border-radius: 13px;
+              font-weight: 700;
+            " ng-click="removeImage()"
+          >
+            Remove Image
+          </button>
+        </p> -->
+            <form action>
+              <img style="width: 280px" ng-src="{{ image }}" />
+            </form>
+          </div>
+        </form>
+      </div>
+      <div
+        style="
+          margin-left: 3rem;
+          width: 64%;
+          padding: 15px 30px;
+          border-radius: 18px;
+        "
+        ng-class="isbrandEdit?'brandContainerUpdate':''"
+      >
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Name:</label>
+          <h3 ng-if="!isbrandEdit" style="position: relative; bottom: 23px">
+            {{brand.name}}
+          </h3>
+          <input
+            type="text"
+            ng-model="brand.name"
+            ng-if="isbrandEdit"
+            value="{{brand.name}}"
+            style="position: relative; bottom: 23px; padding: 5px"
+          />
+        </div>
+
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Description:</label>
+          <h3 ng-if="!isbrandEdit" style="position: relative; bottom: 23px">
+            {{brand.description}}
+          </h3>
+          <textarea
+            rows="4"
+            cols="60"
+            type="text"
+            name="description"
+            ng-if="isbrandEdit"
+            ng-model="brand.description"
+          ></textarea>
+        </div>
+        <div
+          style="height: 70px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Brand Status:</label>
+          <div class="d-flex justify-content-between" style="width: 243px">
+            <button
+              class="btn btn-success d-inline"
+              ng-if="!isbrandEdit && brand.status=='active'"
+            >
+              Active
+            </button>
+
+            <button
+              ng-class="toggle.switch=='active'?'activeBtn':'blankBtn'"
+              ng-click="toggleBrandStatus('active')"
+              ng-if="isbrandEdit"
+            >
+              Activate Brand
+            </button>
+            <button
+              ng-class="toggle.switch=='inactive'?'inactiveBtn':'blankBtn'"
+              ng-click="toggleBrandStatus('inactive')"
+              ng-if="isbrandEdit"
+            >
+              Ban Brand
+            </button>
+            <button
+              class="btn btn-danger d-inline"
+              ng-if="!isbrandEdit && brand.status=='inactive'"
+            >
+              Banned
+            </button>
+          </div>
+        </div>
+        <div
+          ng-if="isbrandEdit"
+          style="height: 70px"
+          class="d-flex flex-column justify-content-between mt-4"
+        >
+          <label>Delete Brand:</label>
+
+          <button
+            ng-click="toggleDelete()"
+            ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+            style="width: 150px"
+          >
+            Delete
+          </button>
+        </div>
+        <button
+          ng-click="updateBrand(brand._id)"
+          ng-if="isbrandEdit"
+          class="btn btn-warning mt-4"
+          style="width: 150px; color: white"
+        >
+          Update Brand
+        </button>
+        <button
+          ng-click="cancelUpdate()"
+          ng-if="isbrandEdit"
+          class="btn cancel mt-4"
+          style="width: 150px; color: white"
+        >
+          Cancel Update
+        </button>
+      </div>
+    </div>
+  </div>
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to change the status of Brand?</h4>
+        <p>Selected Status: <b>{{status}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+  <script type="text/ng-template" id="deleteStatus.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to Delete this Brand?</h4>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Yes</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">No</button>
+    </div>
+  </script>
+</div>

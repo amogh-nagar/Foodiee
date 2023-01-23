@@ -1,0 +1,271 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      left: 12rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left: 12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">New User</h3>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+      <form class="d-flex" name="userForm" novalidate style="width: 100%">
+        <div style="width: 62%">
+          <div
+            class="form-group"
+            ng-class="{'has-error':userForm.name.$invalid && (userForm.name.$dirty || submitted)}"
+          >
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              ng-model="user.name"
+              placeholder="User Name"
+              ng-minlength="3"
+              ng-required="true"
+            />
+            <p
+              ng-show="userForm.name.$error.required && (userForm.name.$dirty || submitted)"
+              class="text-danger"
+            >
+              User Name is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="userForm.name.$error.minlength && (userForm.name.$dirty || submitted)"
+            >
+              User Name is too short
+            </p>
+          </div>
+          <div
+            class="form-group"
+            ng-class="{'has-error':userForm.email.$invalid && (userForm.email.$dirty || submitted)}"
+          >
+            <label for="email">Email</label>
+            <input
+              ng-change="updateProgress('email')"
+              type="email"
+              name="email"
+              id="email"
+              class="form-control"
+              placeholder="User Email"
+              ng-required="true"
+              ng-model="user.email"
+            />
+            <p
+              ng-show="userForm.email.$error.required && (userForm.email.$dirty || submitted)"
+              class="text-danger"
+            >
+              User Email is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="userForm.email.$error.email && (userForm.email.$dirty || submitted)"
+            >
+              Enter a valid email
+            </p>
+          </div>
+          <div
+            ng-class="{'has-error':userForm.password.$invalid && (userForm.password.$dirty || submitted)}"
+            class="form-group"
+          >
+            <label for="password">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              validate-password="user.password"
+              class="form-control"
+              ng-model="user.password"
+              placeholder="User Password"
+              ng-required="true"
+            />
+            <p
+              class="text-danger"
+              ng-show="userForm.password.$error.required && (userForm.password.$dirty || submitted)"
+            >
+              User password is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="userForm.password.$error.validity && (userForm.password.$dirty || submitted)"
+            >
+              Password must contain one Lowercase, One UpperCase, One Number and
+              One Symbol
+            </p>
+          </div>
+          <div
+            class="form-group"
+            ng-class="{'has-error':userForm.confirmPassword.$invalid && (userForm.confirmPassword.$dirty || submitted)}"
+          >
+            <label for="confirmPassword">Confirm Password</label>
+            <input
+              compare-to="user.password"
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              class="form-control"
+              ng-model="user.confirmPassword"
+              placeholder="Confirm Password"
+              ng-compare="password"
+              ng-required="true"
+            />
+            <p
+              class="text-danger"
+              ng-show="userForm.confirmPassword.$error.required && (userForm.confirmPassword.$dirty || submitted)"
+              class="text-danger"
+            >
+              Confirm password is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="userForm.confirmPassword.$error.confirm && (userForm.confirmPassword.$dirty || submitted)"
+            >
+              Confirm Password not matched
+            </p>
+            <p
+              ng-show="userForm.confirmPassword.$error.compare && (userForm.confirmPassword.$dirty || submitted)"
+              class="text-danger"
+            >
+              Confirm password not matched with Password
+            </p>
+          </div>
+
+          <div
+            class="form-group"
+            style="display: flex; align-items: center; column-gap: 10px"
+          >
+            <label>Permissions</label>
+            <div style="margin-left: 13px;" class="d-flex">
+              <div>
+                <h4>Roles</h4>
+                <div style="width: 106%;" class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <button
+                      ng-click="createOrderManager()"
+                      class="btn btn-primary btn-md rounded mt-2"
+                      style="margin: 0"
+                    >
+                      OrderManager
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+              <div
+                style="
+                  
+    position: relative;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 30px;
+    left: 83px;
+
+                "
+              >
+                <div
+                  ng-repeat="(permission,value) in userPermissions"
+                  style="display: flex; align-items: center; column-gap: 10px"
+                >
+                  <input
+                    id="{{permission}}"
+                    type="checkbox"
+                    ng-model="userPermissions[permission]"
+                    ng-value="userPermissions[permission]"
+                  />
+                  <label for="{{permission}}" style="margin: 0"
+                    >{{permission}}</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group d-flex justify-content-between flex-column"
+            style="width: 170px"
+          >
+            <label>User Status</label>
+            <div style="width: 100%">
+              <button
+                class="btn d-inline"
+                ng-click="updateUserStatus('active')"
+                ng-class="status=='active'?'activeBtn':'blankBtn'"
+              >
+                Active
+              </button>
+              <button
+                ng-class="status=='inactive'?'inactiveBtn':'blankBtn'"
+                ng-click="updateUserStatus('inactive')"
+                class="btn d-inline"
+              >
+                InActive
+              </button>
+            </div>
+          </div>
+          <div
+            class="form-group d-flex justify-content-between flex-column"
+            style="width: 170px"
+          >
+            <label>Delete Status</label>
+            <div style="width: 100%">
+              <button
+                ng-click="toggleDelete()"
+                ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+                class="btn d-inline"
+              >
+                {{isdeleted?'Deleted':'Not Deleted'}}
+              </button>
+            </div>
+          </div>
+          <button
+            ng-click="createOutletUser()"
+            ng-disabled="userForm.$invalid"
+            class="btn btn-primary btn-md rounded mt-2"
+          >
+            Create User
+          </button>
+        </div>
+        <div style="width: 38%; padding-left: 39px">
+          <label for="myFileField">Select an Image: </label>
+          <input
+            data-file
+            id="id_image"
+            name="image"
+            ng-model="userImage"
+            type="file"
+            fileread="image"
+          />
+          <form action>
+            <img style="width: 280px" ng-src="{{ image }}" />
+          </form>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

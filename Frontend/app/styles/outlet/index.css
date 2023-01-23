@@ -1,0 +1,196 @@
+.cardItems {
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  background-color: #ffe3e3;
+}
+.addSub button{
+    font: inherit;
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: #8a2b06;
+    border: 1px solid #8a2b06;
+    width: 3rem;
+    text-align: center;
+    border-radius: 6px;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 1rem;
+    margin: 0.25rem;
+}
+.addSub button:active, .addSub button:hover {
+    outline: none;
+    background-color: #8a2b06;
+    color: white;
+}
+.cartBtn {
+  margin-left: 33px !important;
+
+  cursor: pointer;
+  font: inherit;
+  border: none;
+  background-color: #d05728;
+  color: white;
+  padding: 0.75rem 3rem;
+
+  border-radius: 25px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+.outletListItems {
+  display: flex;
+  justify-content: space-between;
+  /* margin: 1rem; */
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.outletListItems h3 {
+  color: black;
+  font-size: 21px;
+  margin: 0 0 0.25rem 0;
+}
+.description {
+  font-size: 17px;
+  color: black;
+  font-style: italic;
+}
+.price {
+
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+  color: #ad5502;
+  font-size: 23px;
+}
+.form {
+  text-align: right;
+}
+.form button {
+  font: inherit;
+  cursor: pointer;
+  background-color: #8a2b06;
+  border: 1px solid #8a2b06;
+  color: white;
+  padding: 0.25rem 2rem;
+  border-radius: 20px;
+  font-weight: bold;
+}
+.form button:hover,
+.form button:active {
+  background-color: #641e03;
+  border-color: #641e03;
+}
+.input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.input label {
+  font-weight: bold;
+  margin-right: 1rem;
+  color: black;
+  font-size: 18px;
+  margin-bottom: 0 !important;
+}
+
+.input input {
+  width: 3rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font: inherit;
+  padding-left: 0.5rem;
+}
+
+.icon {
+  width: 1.35rem;
+  height: 1.35em;
+  margin-right: 0.5rem;
+}
+
+.badgeItem {
+  font-size: 99%;
+  color: #ffffa2;
+  background-color: #b94517;
+  padding: 0.25rem 1rem;
+  border-radius: 25px;
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+.button:hover .badge,
+.button:active .badge {
+  background-color: #92320c;
+}
+
+.bump {
+  animation: bump 300ms ease-out;
+}
+
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(0.9);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cartmodal-header{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    border-top-left-radius: .3rem;
+    border-top-right-radius: .3rem;
+}
+.cartmodal-body{
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1rem;
+    background-color: white;
+}
+.cartmodal-footer{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+.dishDetails h2{
+    margin: 0 0 0.5rem 0;
+    color: #363636;
+}
+.dishPrice{
+    font-weight: bold;
+    color: #8a2b06;
+}
+.dishQuantity{
+    font-weight: bold;
+    border: 1px solid #ccc;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    color: #363636;
+}
+.cartmodal-body li{
+    border-bottom: 2px solid #8a2b06;
+    padding: 1rem 0;
+    margin: 1rem 0;
+}

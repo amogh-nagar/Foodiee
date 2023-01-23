@@ -1,0 +1,233 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+    left:12rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+    left:12rem;
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Outlet</h3>
+
+      <button
+        ng-if="!isoutletEdit"
+        tooltip-placement="top"
+        uib-tooltip="Update Outlet's Status"
+        type="button"
+        class="btn btn-warning"
+        ng-click="updateEditStatus()"
+      >
+        <img src="images/edit-icon.png" alt="" style="width: 21px" />
+      </button>
+    </div>
+    <div style="padding: 24px 1px" class="d-flex justify-content-start">
+     
+      <div>
+        <img
+          style="width: 338px; height: 255px; border-radius: 29px"
+          ng-if="outlet.image.length>0"
+          src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{outlet.image}}"
+          alt=""
+        />
+        <img
+          style="width: 338px; height: 255px; border-radius: 29px"
+          ng-if="!outlet.image || outlet.image.length==0"
+          src="images/dummy-outletImage.jpg"
+          alt=""
+        />
+        <form>
+          <div
+            ng-if="isoutletEdit"
+            style="margin-left: 14px; margin-top: 24px"
+            class="d-flex align-items-start flex-column"
+          >
+            <label for="outletImage">Select an Image: </label>
+            <input
+              data-file
+              id="outletImage"
+              name="image"
+              ng-model="outletImage"
+              type="file"
+              fileread="image"
+            />
+            <br />
+            <!-- <p>
+              Or
+              <button
+                style="
+                  padding: 3px 14px;
+                  border: 0px;
+                  border-radius: 13px;
+                  font-weight: 700;
+                " ng-click="removeImage()"
+              >
+                Remove Image
+              </button>
+            </p> -->
+            <form action>
+              <img style="width: 280px" ng-src="{{ image }}" />
+            </form>
+          </div>
+        </form>
+      </div>
+      <div
+        style="
+          margin-left: 3rem;
+          width: 64%;
+          padding: 15px 30px;
+          border-radius: 18px;
+        "
+        ng-class="isoutletEdit?'brandContainerUpdate':''"
+      >
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Name:</label>
+          <h3 ng-if="!isoutletEdit" style="position: relative; bottom: 23px">
+            {{outlet.name}}
+          </h3>
+          <input
+            type="text"
+            ng-model="outlet.name"
+            ng-if="isoutletEdit"
+            value="{{outlet.name}}"
+            style="position: relative; bottom: 23px; padding: 5px"
+          />
+        </div>
+        <div
+          style="height: 90px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Address:</label>
+          <h3 ng-if="!isoutletEdit" style="position: relative; bottom: 23px">
+            {{outlet.address}}
+          </h3>
+          
+          <input
+            type="text"
+            ng-model="outlet.address"
+            ng-if="isoutletEdit"
+            value="{{outlet.address}}"
+            style="position: relative; bottom: 23px; padding: 5px"
+          />
+        </div>
+        <div
+          style="height: 70px"
+          class="d-flex flex-column justify-content-between"
+        >
+          <label>Outlet Status:</label>
+          <div class="d-flex justify-content-between" style="width: 243px">
+            <button
+              class="btn btn-success d-inline"
+              ng-if="!isoutletEdit && outlet.status=='active'"
+            >
+              Active
+            </button>
+
+            <button
+              ng-class="toggle.switch=='active'?'activeBtn':'blankBtn'"
+              ng-click="toggleOutletStatus('active')"
+              ng-if="isoutletEdit"
+            >
+              Activate Outlet
+            </button>
+            <button
+              ng-class="toggle.switch=='inactive'?'inactiveBtn':'blankBtn'"
+              ng-click="toggleOutletStatus('inactive')"
+              ng-if="isoutletEdit"
+            >
+              Ban Outlet
+            </button>
+            <button
+              class="btn btn-danger d-inline"
+              ng-if="!isoutletEdit && outlet.status=='inactive'"
+            >
+              Banned
+            </button>
+          </div>
+        </div>
+        <div
+          ng-if="isoutletEdit"
+          style="height: 70px"
+          class="d-flex flex-column justify-content-between mt-4"
+        >
+          <label>Delete Outlet:</label>
+
+          <button
+            ng-click="toggleDelete()"
+            ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+            style="width: 150px"
+          >
+            Delete
+          </button>
+        </div>
+        <button
+          ng-click="updateOutlet(outlet._id)"
+          ng-if="isoutletEdit"
+          class="btn btn-warning mt-4"
+          style="width: 150px; color: white"
+        >
+          Update Outlet
+        </button>
+        <button
+          ng-click="cancelUpdate()"
+          ng-if="isoutletEdit"
+          class="btn cancel mt-4"
+          style="width: 150px; color: white"
+        >     
+          Cancel Update
+        </button>
+      </div>
+    </div>
+  </div>
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to change the status of Outlet?</h4>
+        <p>Selected Status: <b>{{status}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+  </script>
+  <script type="text/ng-template" id="deleteStatus.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title" >Warning!</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <h4>Do you want to Delete this Outlet?</h4>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Yes</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">No</button>
+    </div>
+  </script>
+</div>

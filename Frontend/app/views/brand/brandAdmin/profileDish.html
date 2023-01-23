@@ -1,0 +1,171 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      left: 12rem;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      left: 12rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Brand Info > {{brandName}} > Dishes</h3>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          width: 21rem;
+          justify-content: space-between;
+        "
+      >
+        <button ng-if="permissions.includes('isCreateDish')" ng-click="createDish()" class="btn btn-primary btn-md rounded">
+          Create New Dish
+        </button>
+
+        <ul style="list-style: none; margin: 0">
+          <li style="background-color: white" class="nav-item dropdown">
+            <a
+              style="background-color: #8a2b06"
+              class="nav-link dropdown-toggle"
+              href="#"
+              ng-click="toggleDrp()"
+              data-toggle="dropdown"
+            >
+              Categories
+            </a>
+
+            <ul
+              ng-if="openDropDown"
+              style="display: block !important"
+              class="dropdown-menu"
+            >
+              <li
+                ng-init="parentIndex=$index"
+                ng-repeat="supercategory in superCategories |filter:'' track by $index"
+              >
+                <a
+                  ng-click="updateSingleCategory(supercategory)"
+                  class="dropdown-item"
+                >
+                  {{supercategory.name}}
+                </a>
+                <ul
+                  ng-if="categories.length>0 && categories[0].dishSuperCategoryId==supercategory._id"
+                  class="submenu dropdown-menu"
+                >
+                  <li
+                    ng-repeat="category in categories | filter:'' track by $index"
+                  >
+                    <a
+                      ng-click="updateCategoryEntered(category, supercategory)"
+                      class="dropdown-item"
+                      >{{category.name}}</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              <li ng-init="parentIndex=$index">
+                <a
+                  class="dropdown-item"
+                  ng-click="updateCategoryEntered('')"
+                  href="#"
+                >
+                  All Items</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center;" ng-if="dishes.length==0">No Dishes Found</p>
+
+    <ul ng-if="dishes.length>0"
+      style="
+        position: relative;
+        top: 14px;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        row-gap: 40px;
+      "
+      class="list-unstyled"
+    >
+      <li
+        ng-class="{'deletedDot':dish.isdeleted,'activeDot':!dish.isdeleted && dish.status=='active','inactiveDot':!dish.isdeleted && dish.status=='inactive'}"
+        class="brandListItems d-flex justify-content-between flex-column align-items-center"
+        ng-repeat="dish in dishes |filter:{superCategory:{id:selectedSuperCategory._id},category:{id:selectedCategory._id}} track by dish._id"
+        style="width: 260px; height: 260px; position: relative"
+      >
+        <img
+          style="position: absolute; width: 260px; border-radius: 31px"
+          ng-if="!dish.image || dish.dishImage.length==0"
+          src="images/dummy-dishImage.jpg"
+          ng-click="goToDish(dish._id)"
+          alt=""
+        />
+        <img
+          ng-click="goToDish(dish._id)"
+          style="position: absolute; width: 260px; border-radius: 31px"
+          ng-if="dish.image.length>0"
+          ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.image}}"
+          alt=""
+        />
+        <div
+          class="d-flex align-items-center justify-content-center flex-column"
+          style="
+            z-index: 100;
+            position: absolute;
+            bottom: 0;
+            background-color: #ad4d27;
+            width: 100%;
+            border-radius: 0px 0px 31px 31px;
+            padding-top: 10px;
+          "
+        >
+          <h3 ng-click="goToDish(dish._id)" style="">{{dish.name}}</h3>
+          <p>₹{{dish.price}}</p>
+        </div>
+      </li>
+    </ul>
+    <div
+      style="
+        margin-top: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <ul
+        uib-pagination
+        total-items="totalItems"
+        ng-model="currentPage"
+        items-per-page="itemsPerPage"
+        boundary-links="true"
+        force-ellipses="true"
+        max-size="5"
+        class="pagination-sm"
+      ></ul>
+    </div>
+  </div>
+</div>

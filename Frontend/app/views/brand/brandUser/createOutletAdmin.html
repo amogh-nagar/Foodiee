@@ -1,0 +1,247 @@
+<div>
+    <div class="main-image">
+      <img src="images/meals.jpg" alt="A table full of delicious food!" />
+    </div>
+    <div
+      class="position-absolute container-fluid"
+      style="
+        width: 79%;
+        height: 3rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        margin-left: 2rem;
+        top: 8rem;
+        left: 12rem;
+        background-color: #2e2828;
+      "
+    >
+      <h3 class="position-absolute top-5">Your Profile</h3>
+    </div>
+    <div
+      style="
+        position: relative;
+        bottom: 15rem;
+        width: 79%;
+        left: 12rem;
+        padding: 26px 1.5rem;
+        border-radius: 25px;
+        margin-left: 2rem;
+        background-color: #2e2828;
+      "
+    >
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="ml-2">New Outlet Admin</h3>
+      </div>
+      <div style="padding: 24px 1px" class="d-flex justify-content-start">
+        <form class="d-flex" name="adminForm" novalidate style="width: 100%">
+          <div style="width: 62%">
+            <div
+              class="form-group"
+              ng-class="{'has-error':adminForm.name.$invalid && (adminForm.name.$dirty || submitted)}"
+            >
+              <label for="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                ng-model="admin.name"
+                placeholder="Admin Name"
+                ng-minlength="3"
+                ng-required="true"
+              />
+              <p
+                ng-show="adminForm.name.$error.required && (adminForm.name.$dirty || submitted)"
+                class="text-danger"
+              >
+                Admin Name is required
+              </p>
+              <p
+                class="text-danger"
+                ng-show="adminForm.name.$error.minlength && (adminForm.name.$dirty || submitted)"
+              >
+                Admin Name is too short
+              </p>
+            </div>
+            <div
+              class="form-group"
+              ng-class="{'has-error':adminForm.email.$invalid && (adminForm.email.$dirty || submitted)}"
+            >
+              <label for="email">Email</label>
+              <input
+                ng-change="updateProgress('email')"
+                type="email"
+                name="email"
+                id="email"
+                class="form-control"
+                placeholder="Admin Email"
+                ng-required="true"
+                ng-model="admin.email"
+              />
+              <p
+                ng-show="adminForm.email.$error.required && (adminForm.email.$dirty || submitted)"
+                class="text-danger"
+              >
+                Admin Email is required
+              </p>
+              <p
+                class="text-danger"
+                ng-show="adminForm.email.$error.email && (adminForm.email.$dirty || submitted)"
+              >
+                Enter a valid email
+              </p>
+            </div>
+            <div
+              ng-class="{'has-error':adminForm.password.$invalid && (adminForm.password.$dirty || submitted)}"
+              class="form-group"
+            >
+              <label for="password">Password</label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                validate-password="admin.password"
+                class="form-control"
+                ng-model="admin.password"
+                placeholder="admin Password"
+                ng-required="true"
+              />
+              <p
+                class="text-danger"
+                ng-show="adminForm.password.$error.required && (adminForm.password.$dirty || submitted)"
+              >
+                Admin password is required
+              </p>
+              <p
+                class="text-danger"
+                ng-show="adminForm.password.$error.validity && (adminForm.password.$dirty || submitted)"
+              >
+                Password must contain one Lowercase, One UpperCase, One Number and
+                One Symbol
+              </p>
+            </div>
+            <div
+              class="form-group"
+              ng-class="{'has-error':adminForm.confirmPassword.$invalid && (adminForm.confirmPassword.$dirty || submitted)}"
+            >
+              <label for="confirmPassword">Confirm Password</label>
+              <input
+                compare-to="admin.password"
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                class="form-control"
+                ng-model="admin.confirmPassword"
+                placeholder="Confirm Password"
+                ng-compare="password"
+                ng-required="true"
+              />
+              <p
+                class="text-danger"
+                ng-show="adminForm.confirmPassword.$error.required && (adminForm.confirmPassword.$dirty || submitted)"
+                class="text-danger"
+              >
+                Confirm password is required
+              </p>
+              <p
+                class="text-danger"
+                ng-show="adminForm.confirmPassword.$error.confirm && (adminForm.confirmPassword.$dirty || submitted)"
+              >
+                Confirm Password not matched
+              </p>
+              <p
+                ng-show="adminForm.confirmPassword.$error.compare && (adminForm.confirmPassword.$dirty || submitted)"
+                class="text-danger"
+              >
+                Confirm password not matched with Password
+              </p>
+            </div>
+  
+            
+            <div
+              class="form-group"
+              style="display: flex; align-items: center; column-gap: 10px"
+            >
+              <label>Permissions</label>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: auto auto;
+                  grid-column-gap: 30px;
+                "
+              >
+                <div ng-repeat="(permission,value) in adminPermissions" style="display: flex; align-items: center; column-gap: 10px">
+                  <input
+                    id="{{permission}}"
+                    type="checkbox"
+                    ng-model="adminPermissions[permission]"
+                    ng-value="adminPermissions[permission]"
+                  />
+                  <label for="{{permission}}" style="margin: 0">{{permission}}</label>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-group d-flex justify-content-between flex-column"
+              style="width: 170px"
+            >
+              <label>Admin Status</label>
+              <div style="width: 100%">
+                <button
+                  class="btn d-inline"
+                  ng-click="updateAdminStatus('active')"
+                  ng-class="status=='active'?'activeBtn':'blankBtn'"
+                >
+                  Active
+                </button>
+                <button
+                  ng-class="status=='inactive'?'inactiveBtn':'blankBtn'"
+                  ng-click="updateAdminStatus('inactive')"
+                  class="btn d-inline"
+                >
+                  InActive
+                </button>
+              </div>
+            </div>
+            <div
+              class="form-group d-flex justify-content-between flex-column"
+              style="width: 170px"
+            >
+              <label>Delete Status</label>
+              <div style="width: 100%">
+                <button
+                  ng-click="toggleDelete()"
+                  ng-class="isdeleted?'inactiveBtn':'blankBtn'"
+                  class="btn d-inline"
+                >
+                  {{isdeleted?'Deleted':'Not Deleted'}}
+                </button>
+              </div>
+            </div>
+            <button
+              ng-click="createOutletAdmin()"
+              ng-disabled="adminForm.$invalid"
+              class="btn btn-primary btn-md rounded mt-2"
+            >
+              Create Admin
+            </button>
+          </div>
+          <div style="width: 38%; padding-left: 39px">
+            <label for="myFileField">Select an Image: </label>
+            <input
+              data-file
+              id="id_image"
+              name="image"
+              ng-model="adminImage"
+              type="file"
+              fileread="image"
+            />
+            <form action>
+              <img style="width: 280px" ng-src="{{ image }}" />
+            </form>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

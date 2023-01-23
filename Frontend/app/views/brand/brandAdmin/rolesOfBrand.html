@@ -1,0 +1,108 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+      left: 12rem;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      left: 12rem;
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Brand Info > {{brandName}} > Roles</h3>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          width: 18rem;
+          justify-content: space-between;
+        "
+      >
+        <button ng-if="permissions.includes('isCreateBrandUser')"
+          ng-click="createBrandUser()"
+          class="btn btn-primary btn-md rounded"
+        >
+          Create New user
+        </button>
+
+        <select ng-model="selectedTag" ng-options="item for item in options">
+          <option value="">Select Tag</option>
+        </select>
+      </div>
+    </div>
+    <ul
+      style="
+        position: relative;
+        top: 14px;
+        display: flex;
+        row-gap: 40px;
+        column-gap: 38px;
+        flex-wrap: wrap;
+      "
+      class="list-unstyled"
+    >
+      <li
+        ng-class="{'deletedDot':brand.isdeleted,'activeDot':!brand.isdeleted && brand.brandStatus=='active','inactiveDot':!brand.isdeleted && brand.brandStatus=='inactive'}"
+        class="brandListItems d-flex justify-content-between align-items-center"
+        ng-repeat="role in roles |filter:{status:selectedTag}:true track by role._id"
+        style="
+          width: max-content;
+          height: 89px;
+          column-gap: 35px;
+          display: flex !important;
+          align-items: center !important;
+          flex-direction: row;
+          justify-content: space-between !important;
+        "
+      >
+        <div
+          ng-click="goToRole(role._id)"
+          class="d-flex align-items-center justify-content-center flex-column"
+          style="padding: 17px; width: max-content"
+        >
+          <h3 style="align-self: flex-end">{{role.role}}</h3>
+        </div>
+      </li>
+    </ul>
+    <div
+      style="
+        margin-top: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <ul
+        uib-pagination
+        total-items="totalItems"
+        ng-model="currentPage"
+        items-per-page="itemsPerPage"
+        boundary-links="true"
+        force-ellipses="true"
+        max-size="5"
+        class="pagination-sm"
+      ></ul>
+    </div>
+  </div>
+</div>

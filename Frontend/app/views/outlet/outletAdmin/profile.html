@@ -1,0 +1,117 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+      left: 12rem;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      left: 12rem;
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Outlets</h3>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          width: 18rem;
+          justify-content: space-between;
+        "
+      >
+
+        <!-- <select ng-model="selectedTag" ng-options="item for item in options">
+          <option value="">Select Tag</option>
+        </select> -->
+      </div>
+    </div>
+    <ul
+      style="
+        position: relative;
+        top: 14px;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        row-gap: 40px;
+      "
+      class="list-unstyled"
+    >
+      <li
+        ng-class="{'deletedDot':outlet.isdeleted,'activeDot':!outlet.isdeleted && outlet.status=='active','inactiveDot':!outlet.isdeleted && outlet.status=='inactive'}"
+        class="brandListItems d-flex justify-content-between flex-column align-items-center"
+        ng-repeat="outlet in outlets |filter:{status:selectedTag}:true track by outlet._id"
+        style="width: 237px; position: relative; height: 249px"
+      >
+        <img
+          style="
+            position: absolute;
+            width: 237px;
+            border-radius: 31px 31px 0px 0px;
+          "
+          ng-if="!outlet.image || outlet.image.length==0"
+          src="images/dummy-outletImage.jpg"
+          ng-click="goToOutlet(outlet._id,outlet.name)"
+          alt=""
+        />
+        <img
+          ng-click="goToOutlet(outlet._id,outlet.name)"
+          style="
+            position: absolute;
+            width: 237px;
+            height: 177px;
+
+            border-radius: 31px 31px 0px 0px;
+          "
+          ng-if="outlet.image.length>0"
+          ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{outlet.image}}"
+          alt=""
+        />
+        <div
+          ng-click="goToOutlet(outlet._id,outlet.name)"
+          class="d-flex align-items-center justify-content-center flex-column"
+          style="position: absolute; bottom: 19px"
+        >
+          <h3 style="">{{outlet.name}}</h3>
+        </div>
+      </li>
+    </ul>
+    <div
+      style="
+        margin-top: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <ul
+        uib-pagination
+        total-items="totalItems"
+        ng-model="currentPage"
+        items-per-page="itemsPerPage"
+        boundary-links="true"
+        force-ellipses="true"
+        max-size="5"
+        class="pagination-sm"
+      ></ul>
+    </div>
+  </div>
+</div>

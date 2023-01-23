@@ -1,0 +1,102 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  
+  <div
+    style="    display: flex;
+    position: absolute;
+    top: 5rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+"
+    ng-controller="loginController"
+  >
+    <div class="formContainer">
+      <h3 class="d-flex justify-content-center">Login</h3>
+      <form action="" name="userForm" novalidate>
+        
+        <div
+          ng-if="error.length>0"
+          uib-alert
+          class="alert alert-danger"
+          close="closeAlert()"
+        >
+          {{error}}
+        </div>
+
+        <div
+          class="form-group"
+          ng-class="{'has-error':userForm.email.$invalid && (userForm.email.$dirty || submitted)}"
+        >
+          <label for="email">Email</label>
+          <input
+            ng-change="updateProgress('email')"
+            type="email"
+            name="email"
+            id="email"
+            class="form-control"
+            placeholder="Your Email"
+            ng-required="true"
+            ng-model="user.email"
+          />
+          <p
+            ng-show="userForm.email.$error.required && (userForm.email.$dirty || submitted)"
+            class="text-danger"
+          >
+            Email is required
+          </p>
+          <p
+            class="text-danger"
+            ng-show="userForm.email.$error.email && (userForm.email.$dirty || submitted)"
+          >
+            Enter a valid email
+          </p>
+        </div>
+        <div
+          ng-class="{'has-error':userForm.password.$invalid && (userForm.password.$dirty || submitted)}"
+          class="form-group"
+        >
+          <label for="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            validate-password="user.password"
+            class="form-control"
+            ng-model="user.password"
+            placeholder="Your Password"
+            ng-required="true"
+          />
+          <p
+            class="text-danger"
+            ng-show="userForm.password.$error.required && (userForm.password.$dirty || submitted)"
+          >
+            Your password is required
+          </p>
+          <p
+            class="text-danger"
+            ng-show="userForm.password.$error.validity && (userForm.password.$dirty || submitted)"
+          >
+            Password must contain one Lowercase, One UpperCase, One Number and
+            One Symbol
+          </p>
+        </div>
+
+        <!-- <br /> -->
+        <button
+          type="submit"
+          class="btn btn-primary btn-md rounded mt-2"
+          ng-disabled="userForm.$invalid"
+          ng-click="login($event)"
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+  <!-- <div class="main-image">
+    <img src="images/meals-table-2.jpg" alt="A table full of delicious food!" />
+  </div> -->
+</div>

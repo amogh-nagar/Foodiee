@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html ng-app="foodOrdering">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" /> -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+
+    <script
+      data-require="d3@*"
+      data-semver="3.3.11"
+      src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://rawgit.com/chinmaymk/angular-charts/bower/dist/angular-charts.min.js"
+    ></script>
+    <link rel="stylesheet" href="./bower_components/oi.select/dist/select.min.css" />    
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/auth/index.css" />
+    <link rel="stylesheet" href="styles/brand/index.css" />
+    <link rel="stylesheet" href="styles/outlet/index.css" />
+    <link rel="stylesheet" href="styles/admin/index.css" />
+    <link
+      href="https://netdna.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+      type="text/javascript"
+    ></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-sanitize.js"></script>
+    <script src="https://morgul.github.io/ui-bootstrap4/ui-bootstrap-tpls-3.0.6.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.30/angular-ui-router.js"></script>
+    <script src="http://cdn.jsdelivr.net/g/jquery@1,jquery.ui@1.10%28jquery.ui.core.min.js+jquery.ui.widget.min.js+jquery.ui.mouse.min.js+jquery.ui.sortable.min.js%29,angularjs@1.2,angular.ui-sortable"></script>
+    <!-- endbuild -->
+  </head>
+  <body ng-controller="Index">
+    <header
+      style="z-index: 1000;padding: 0 70px"
+      class="header d-flex align-items-center justify-content-between"
+    >
+      <h1 class="d-flex align-items-center flex-row justify-content-between">
+        FoodOrdering
+      </h1>
+      <div style="" class="d-flex justify-content-between align-items-center">
+        <ul ng-if="!signin" class="list my-5">
+          <li class="">
+            <a style="text-decoration: none; font-weight: 600" ui-sref="login"
+              >Login</a
+            >
+          </li>
+          <li class="">
+            <a style="text-decoration: none; font-weight: 600" ui-sref="signup"
+              >Signup</a
+            >
+          </li>
+        </ul>
+        <button
+          ng-if="signin && permissions.includes('isCreateOrder')"
+          ng-click="openCart()"
+          ng-class="{'bump':isAddToCart}"
+          class="cartBtn d-flex justify-content-around align-items-center"
+        >
+          <span class="icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+              />
+            </svg>
+          </span>
+          <span>Your Cart</span>
+          <span class="badgeItem"
+            >{{cart.totalCartItems?cart.totalCartItems:0}}</span
+          >
+        </button>
+
+        <ul
+          ng-if="signin"
+          style="background-color: #5b2009; margin-left: 2rem"
+          class="list-logout mt-3"
+        >
+          <li ng-click="logout()">
+            <button
+              style="
+                background-color: #5b2009;
+                color: white;
+                cursor: pointer;
+                border: 0px;
+                padding: 15px;
+              "
+            >
+              Logout
+            </button>
+          </li>
+          <div
+            ng-if="userImage.length>0"
+            style="position: absolute; right: 3rem"
+            class="dropdown"
+          >
+            <img
+              style="width: 40px; height: 40px; border-radius: 50%"
+              ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{userImage}}"
+            />
+          </div>
+        </ul>
+      </div>
+    </header>
+    <div>
+      <div
+        ng-if="signin"
+        style="
+          display: flex;
+          justify-content: center;
+          position: fixed;
+          z-index: 9;
+        "
+      >
+        <div
+          style="
+            width: 200px;
+            height: 31rem;
+            background-color: #4e4e4e;
+            margin-top: 2rem;
+          "
+          class="d-flex justify-content-center align-items-around flex-column"
+        >
+          <ul class="list my-5 flex-column">
+            <li class="" ng-if="signin && role.roleName=='superAdmin'">
+              <a style="font-weight: 600" ui-sref="superAdminProfile"
+                >Your Brands</a
+              >
+            </li>
+            <li class="" ng-if="signin && role.entity=='Outlet' && role.roleName=='Admin'">
+              <a style="font-weight: 600" ui-sref="outletAdminProfile"
+                >Your Outlets</a
+              >
+            </li>
+            <li
+              class=""
+              ng-if="signin && role.entity=='Brand' && role.roleName=='Admin'"
+            >
+              <a style="font-weight: 600" ui-sref="brandAdminProfile"
+                >Your Brands</a
+              >
+            </li>
+            <li class="" ng-if="signin && role.roleName=='superAdmin' && permissions.includes('isGenerateBrandReport')">
+              <a style="font-weight: 600" ui-sref="superAdminReport"
+                >Brand Reports</a
+              >
+            </li>
+            <li
+              class=""
+              ng-if="signin && role.entity=='Brand' && role.roleName=='Admin'"
+            >
+              <a style="font-weight: 600" ui-sref="brandAdminReport"
+                >Brand Reports</a
+              >
+            </li>
+
+            <li class="" ng-if="signin && (role.entity+role.roleName)!='BrandAdmin' && permissions.includes('isReadDish')">
+              <a style="font-weight: 600" ui-sref="brandUserDish">Dishes</a>
+            </li>
+            <li class="" ng-if="signin &&  (role.entity+role.roleName)!='BrandAdmin' && permissions.includes('isGenerateDishReport')">
+              <a style="font-weight: 600" ui-sref="brandUserDishReport"
+                >Dish Reports</a
+              >
+            </li>
+            <li class="" ng-if="signin &&  (role.entity+role.roleName)=='BrandAdmin' && permissions.includes('isGenerateDishReport')">
+              <a style="font-weight: 600" ui-sref="brandDishReport"
+                >Dish Reports</a
+              >
+            </li>
+            <li class="" ng-if="signin &&  (role.entity+role.roleName)=='BrandAdmin' && permissions.includes('isGenerateOutletReport')">
+              <a style="font-weight: 600" ui-sref="brandOutletReport"
+                >Outlet Reports</a
+              >
+            </li>
+            <li class="" ng-if="signin &&  (role.entity+role.roleName)=='OutletAdmin' && permissions.includes('isGenerateOutletReport')">
+              <a style="font-weight: 600" ui-sref="outletAdminReport"
+                >Outlet Reports</a
+              >
+            </li>
+
+            <li class="" ng-if="signin && (role.entity+role.roleName)!='BrandAdmin' && permissions.includes('isReadOutlet')">
+              <a style="font-weight: 600" ui-sref="brandUserOutlet">Outlets</a>
+            </li>
+
+            <li class="" ng-if="signin && (role.entity+role.roleName)!='BrandAdmin' && (role.entity+role.roleName)!='OutletAdmin' && permissions.includes('isGenerateOutletReport')">
+              <a style="font-weight: 600" ui-sref="brandUserOutletReport"
+                >Outlet Reports</a
+              >
+            </li>
+            <!-- <li class="">
+              <a class="dropbtn" style="font-weight: 600">Reports</a>
+              <div id="dropdown-content">
+              <a style="font-weight: 600" ui-sref="brandReport">Items Report</a>
+
+              </div>
+            </li> -->
+            <li ng-if="signin && (role.entity+role.roleName)!='BrandAdmin' && permissions.includes('isReadOutletDish')" class="">
+              <a
+                style="text-decoration: none; font-weight: 600"
+                ui-sref="outletProfileDish"
+                >Dishes</a
+              >
+            </li>
+            <li ng-if="permissions.includes('isReadOrder')" class="">
+              <a
+                style="text-decoration: none; font-weight: 600"
+                ui-sref="outletOrder"
+                >Your Orders</a
+              >
+            </li>
+            <li ng-if="permissions.includes('isReadOutletDishes')" class="">
+              <a
+                style="text-decoration: none; font-weight: 600"
+                ui-sref="outletUserDish"
+                >Dishes</a
+              >
+            </li>
+            <li style="background-color: #5b2009">
+              <a
+                ui-sref="userProfile"
+                style="
+                  background-color: #5b2009;
+                  color: white;
+                  cursor: pointer;
+                  border: 0px;
+                  padding: 15px;
+                "
+                >Profile
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-top: 5rem">
+        <orderdone showme="orderDone"></orderdone>
+        <loading showme="isLoading"></loading>
+        <errormsg showme="error.length>0"></errormsg>
+        <ui-view></ui-view>
+      </div>
+    </div>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
+      !(function (A, n, g, u, l, a, r) {
+        (A.GoogleAnalyticsObject = l),
+          (A[l] =
+            A[l] ||
+            function () {
+              (A[l].q = A[l].q || []).push(arguments);
+            }),
+          (A[l].l = +new Date()),
+          (a = n.createElement(g)),
+          (r = n.getElementsByTagName(g)[0]),
+          (a.src = u),
+          r.parentNode.insertBefore(a, r);
+      })(
+        window,
+        document,
+        "script",
+        "https://www.google-analytics.com/analytics.js",
+        "ga"
+      );
+
+      ga("create", "UA-XXXXX-X");
+      ga("send", "pageview");
+    </script>
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular-ui-select/dist/select.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <!-- <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script> -->
+
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+      type="text/javascript"
+    ></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> -->
+    <!-- <script src="https://morgul.github.io/ui-bootstrap4/ui-bootstrap-tpls-3.0.6.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.30/angular-ui-router.js"></script> -->
+    <script>
+      $(".dropdown-menu a.dropdown-toggle").on("click", function (e) {
+        if (!$(this).next().hasClass("show")) {
+          $(this)
+            .parents(".dropdown-menu")
+            .first()
+            .find(".show")
+            .removeClass("show");
+        }
+        var $subMenu = $(this).next(".dropdown-menu");
+        $subMenu.toggleClass("show");
+
+        $(this)
+          .parents("li.nav-item.dropdown.show")
+          .on("hidden.bs.dropdown", function (e) {
+            $(".dropdown-submenu .show").removeClass("show");
+          });
+
+        return false;
+      });
+    </script>
+    <script src="./bower_components/oi.select/dist/select-tpls.min.js"></script>
+    <script src="./bower_components/socket.io-client/dist/socket.io.js"></script>
+    <script src="./bower_components/angular-socket-io/socket.js"></script>
+
+    <script
+      type="text/javascript"
+      src="./bower_components/angular/angular.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="./bower_components/d3/d3.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="./bower_components/angular-charts/dist/angular-charts.min.js"
+    ></script>
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/374756/zingchart-2.3.3.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/374756/zingchart-angularjs-1.0.4.js"></script>
+
+    <script src="http://cdn.jsdelivr.net/g/jquery@1,jquery.ui@1.10%28jquery.ui.core.min.js+jquery.ui.widget.min.js+jquery.ui.mouse.min.js+jquery.ui.sortable.min.js%29,angularjs@1.2,angular.ui-sortable"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <script src="scripts/script.js"></script>
+    
+    <script src="scripts/directives/error.js"></script>
+    <script src="scripts/services/script.js"></script>
+    <script src="scripts/services/superAdminServices/superAdminServices.js"></script>
+    <script src="scripts/services/brand/brandAdmin/brandAdmin.js"></script>
+    <script src="scripts/services/brand/brandUser/brandUser.js"></script>
+    <script src="scripts/services/outlet/outletAdmin/script.js"></script>
+    <script src="scripts/services/outlet/outletUser/script.js"></script>
+    <script src="scripts/factory/authorization.js"></script>
+    <script src="scripts/directives/fileUpload.js"></script>
+    <script src="scripts/directives/loader.js"></script>
+    <script src="scripts/socket/directives.js"></script>
+    <script src="scripts/socket/filters.js"></script>
+    <script src="scripts/socket/services.js"></script>
+    <script src="scripts/admin/script.js"></script>
+    <script src="scripts/auth/script.js"></script>
+    <script src="scripts/outlet/outletAdmin/script.js"></script>
+    <script src="scripts/outlet/outletUser/script.js"></script>
+    <script src="scripts/brand/script.js"></script>
+    <script src="scripts/brand/brandUser/script.js"></script>
+    <script src="scripts/brand/brandAdmin/script.js"></script>
+    <script src="scripts/superAdmin/script.js"></script>
+    <script type="text/ng-template" id="cart.html">
+          <div class="cartmodal-header">
+              <h3 class="modal-title" id="modal-title" >Your Cart!</h3>
+          </div>
+          <div class="cartmodal-body" id="modal-body">
+              <ul style="padding-left:0;    height: 310px;
+              overflow-y: scroll;">
+                  <li  class="d-flex justify-content-between align-items-center" ng-repeat="dish in cart.items|filter:'' track by dish.dishId._id">
+                      <div class="dishDetails">
+                          <h2>{{dish.dishId.name}}</h2>
+                          <div style="    width: 10rem;
+                          " class="d-flex justify-content-between align-items-center">
+                              <span class="dishPrice">₹{{dish.dishId.price}}</span>
+                              <span class="dishQuantity">x {{dish.quantity}}</span>
+                          </div>
+                      </div>
+                      <div class="addSub">
+                          <button ng-click="addSub('-',dish.dishId._id)">-</button>
+                          <button ng-click="addSub('+',dish.dishId._id)">+</button>
+                      </div>
+                  </li>
+              </ul>
+              <div style="flex-direction: column;color:black" class="d-flex justify-content-between align-items-center totalAmountDiv">
+      
+      <div style="color:black;width:100%" class="d-flex justify-content-end  totalAmountDiv">
+        <h4 style="margin-right:18px">Amount:</h4>
+      <h4>₹{{cart.totalCartPrice}}</h4>
+                </div>
+              <div style='width:100%' class="d-flex justify-content-end align-items-center totalAmountDiv" >  <p class="description">Tax: ₹{{taxAmount}} </p></div>
+              <div style="color:black;width:100%" class="d-flex justify-content-between align-items-center totalAmountDiv">
+                <h2>Total Amount</h2>
+              <h2>₹{{cart.totalCartPrice+taxAmount}}</h2>
+                        </div>
+              </div>
+          </div>
+          <div class="cartmodal-footer">
+              <button class="btn btn-primary" style="margin-right:16px" type="button" ng-click="ok()">Order Now!</button>
+              <button class="btn btn-warning" type="button" ng-click="cancel()">Close</button>
+          </div>
+    </script>
+    <script type="text/ng-template" id="order.html">
+          <div class="cartmodal-header">
+              <h3 class="modal-title" id="modal-title" >Order Now!</h3>
+          </div>
+          <div class="cartmodal-body" id="modal-body">
+              <div>
+                  <form action="" name="orderForm" novalidate>
+                      <div class="form-group"   ng-class="{'has-error':orderForm.name.$invalid && (orderForm.name.$dirty || submitted)}"
+                      >
+                          <label style="font-size:23px;    color: black;
+                          font-weight: 700;" for="name">Customer's Name</label>
+                <input
+                  ng-change="updateProgress('name')"
+                  type="text"
+                  name="name"
+                  id="name"
+                  class="form-control"
+                  placeholder="Customer's Name"
+                  ng-required="true"
+                  ng-model="order.name"
+                />
+                <p
+                ng-show="orderForm.name.$error.required && (orderForm.name.$dirty || submitted)"
+                class="text-danger"
+              >
+                Name is required
+              </p>
+                      </div>
+                      <div class="form-group"   ng-class="{'has-error':orderForm.email.$invalid && (orderForm.email.$dirty || submitted)}"
+                      >
+                          <label style="    color: black;font-size:23px;
+                          font-weight: 700;" for="email">Customer's Email</label>
+                <input
+                  ng-change="updateProgress('email')"
+                  type="email"
+                  name="email"
+                  id="email"
+                  class="form-control"
+                  placeholder="Customer's Email"
+                  ng-required="true"
+                  ng-model="order.email"
+                />
+                <p
+              ng-show="orderForm.email.$error.required && (orderForm.email.$dirty || submitted)"
+              class="text-danger"
+            >
+              Email is required
+            </p>
+            <p
+              class="text-danger"
+              ng-show="orderForm.email.$error.email && (orderForm.email.$dirty || submitted)"
+            >
+              Enter a valid email
+            </p>
+                      </div>
+                      <div class="form-group"   ng-class="{'has-error':orderForm.contact.$invalid && (orderForm.contact.$dirty || submitted)}"
+                      >
+                          <label style="    color: black;
+                          font-weight: 700;font-size:23px" for="contact">Customer's Contact No.</label>
+                <input
+                  ng-change="updateProgress('contact')"
+                  type="number"
+                  name="contact"
+                  id="contact"
+                  class="form-control"
+                  placeholder="Customer's Contact No."
+                  ng-required="true"
+                  ng-model="order.contact"
+                />
+                <p
+              ng-show="orderForm.contact.$error.required && (orderForm.contact.$dirty || submitted)"
+              class="text-danger"
+            >
+              ContactNo is required
+            </p>
+                      </div>
+                      <div
+                      style="height: 70px;"
+                      class="form-group d-flex flex-column justify-content-between"
+                    >
+                      <label style="    color: black;
+                      font-weight: 700;font-size:23px">Order Type</label>
+                      <div class="d-flex justify-content-between" style="width: 185px">
+                        <button type="button" ng-class="{'btn-primary':order.type=='Dine In','blankBtn':order.type=='Take Over'}"
+                          class="btn d-inline" ng-click="order.type='Dine In'"
+                        >
+                          Dine In
+                        </button>
+
+                        <button type="button" ng-click="order.type='Take Over'" ng-class="{'btn-primary':order.type=='Take Over','blankBtn':order.type=='Dine In'}"  class="btn d-inline"
+                        >
+                          Take Over
+                        </button>
+
+                      </div>
+                    </div>
+
+                  </form>
+              </div>
+              <div style="    margin-top: 3rem;
+              " class="form-group">
+                  <label style="       position: relative;
+                  top: 2rem; color: black;
+                  font-weight: 700;font-size:23px" for="">Dishes</label>
+              <ul style="padding-left:0;    height: 310px;
+              overflow-y: scroll;">
+                  <li  class="d-flex justify-content-between align-items-center" ng-repeat="dish in cart.items|filter:'' track by dish.dishId._id">
+                      <div class="dishDetails">
+                          <h2>{{dish.dishId.name}}</h2>
+                          <div style="    width: 10rem;
+                          " class="d-flex justify-content-between align-items-center">
+                              <span class="dishPrice">₹{{dish.dishId.dishPrice}}</span>
+                              <span class="dishQuantity">x {{dish.quantity}}</span>
+                          </div>
+                      </div>
+
+                  </li>
+              </ul>
+          </div>
+          <div style="flex-direction: column;color:black" class="d-flex justify-content-between align-items-center totalAmountDiv">
+      
+            <div style="color:black;width:100%" class="d-flex justify-content-end  totalAmountDiv">
+              <h4 style="margin-right:18px">Amount:</h4>
+            <h4>₹{{cart.totalCartPrice}}</h4>
+                      </div>
+                    <div style='width:100%' class="d-flex justify-content-end align-items-center totalAmountDiv" >  <p class="description">Tax: ₹{{taxAmount}} </p></div>
+                    <div style="color:black;width:100%" class="d-flex justify-content-between align-items-center totalAmountDiv">
+                      <h2>Total Amount</h2>
+                    <h2>₹{{cart.totalCartPrice+taxAmount}}</h2>
+                              </div>
+                    </div>
+          </div>
+          <div class="cartmodal-footer">
+              <button class="btn btn-primary" style="margin-right:16px" type="button" ng-click="confirmOrder()">Confirm!</button>
+              <button class="btn btn-warning" type="button" ng-click="cancel()">Close</button>
+          </div>
+    </script>
+    <!-- endbuild -->
+  </body>
+</html>

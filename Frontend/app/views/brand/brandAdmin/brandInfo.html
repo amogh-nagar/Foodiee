@@ -1,0 +1,133 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+      left: 12rem;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      left: 12rem;
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Brand Info > {{brandName}}</h3>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          width: 18rem;
+          justify-content: flex-end;
+        "
+      >
+        <button
+          ui-sref="updateBrandAdminBrand"
+          class="btn btn-primary btn-md rounded"
+        >
+          Update Brand
+        </button>
+      </div>
+    </div>
+    <ul
+      style="
+        position: relative;
+        top: 14px;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        row-gap: 40px;
+      "
+      class="list-unstyled"
+    >
+      <li ng-if="signin && (role.entity+role.roleName)=='BrandAdmin' && permissions.includes('isReadOutlet')"
+        class="brandListItems d-flex justify-content-between flex-column align-items-center"
+        style="width: 237px; position: relative; height: 249px"
+      >
+        <img
+          style="
+            position: absolute;
+            width: 237px;
+            border-radius: 31px 31px 0px 0px;
+          "
+          src="images/dummy-outletImage.jpg"
+          ng-click="goToOutlet()"
+          alt=""
+        />
+
+        <div
+          ng-click="goToOutlet()"
+          class="d-flex align-items-center justify-content-center flex-column"
+          style="position: absolute; bottom: 19px"
+        >
+          <h3 style="">Outlets</h3>
+        </div>
+      </li>
+      <li ng-if="signin && (role.entity+role.roleName)=='BrandAdmin' && permissions.includes('isReadDish')"
+        class="brandListItems d-flex justify-content-between flex-column align-items-center"
+        style="width: 237px; position: relative; height: 249px"
+      >
+        <img
+          style="
+            position: absolute;
+            width: 237px;
+            height: 184px;
+            border-radius: 31px 31px 0px 0px;
+          "
+          src="images/dummy-dishImage.jpg"
+          ng-click="goToDish()"
+          alt=""
+        />
+
+        <div
+          ng-click="goToDish()"
+          class="d-flex align-items-center justify-content-center flex-column"
+          style="position: absolute; bottom: 19px"
+        >
+          <h3 style="">Dishes</h3>
+        </div>
+      </li>
+      <li
+        class="brandListItems d-flex justify-content-between flex-column align-items-center"
+        style="width: 237px; position: relative; height: 249px"
+      >
+        <img
+          style="
+            width: 237px;
+            height: 184px;
+            border-radius: 31px 31px 0px 0px;
+            position: absolute;
+          "
+          src="images/dummy-user.jpg"
+          ng-click="goToRole()"
+          alt=""
+        />
+
+        <div
+          ng-click="goToRole()"
+          class="d-flex align-items-center justify-content-center flex-column"
+          style="position: absolute; bottom: 19px"
+        >
+          <h3 style="">Users</h3>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

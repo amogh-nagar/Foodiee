@@ -1,0 +1,230 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      left: 12rem;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left: 12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Reports</h3>
+    </div>
+    <div style="display: flex">
+      <div style="width: max-content; margin-top: 31px;    min-width: 336px;">
+        <p style="text-align: center;" ng-if="dishes.length==0">No Dishes Found</p>
+        <ul ng-if="dishes.length>0"
+          style="
+            display: flex;
+            flex-direction: column;
+            width: 21rem;
+            height: 49rem;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 21px;
+            row-gap: 20px;
+          "
+          class="list-unstyled"
+        >
+          <li
+            class="brandListItems d-flex justify-content-between flex-column align-items-center"
+            ng-repeat="dish in dishes
+            |filter:{brandStatus:selectedTag}:true track by dish._id"
+            style="
+              height: 82px;
+              width: 300px;
+              display: flex !important;
+              flex-direction: row !important;
+            "
+          >
+            <div
+              style="
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+              ng-click="select(dish._id)"
+              ng-class="{'activeCnt':isselected[dish._id]}"
+            >
+              <img
+                style="
+                  width: 55px;
+                  height: 55px;
+                  border-radius: 50%;
+                  position: relative;
+                  left: 11px;
+                "
+                ng-if="!dish.image || dish.image.length==0"
+                src="images/dummy-dishImage.jpg"
+                alt=""
+              />
+              <img
+                style="
+                  width: 55px;
+                  height: 55px;
+                  border-radius: 50%;
+                  position: relative;
+                  left: 11px;
+                "
+                ng-if="dish.image.length>0"
+                ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.image}}"
+                alt=""
+              />
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-end;
+                  position: relative;
+                  right: 21px;
+                  margin-top: 10px;
+                "
+              >
+                <h3 style="">{{dish.name}}</h3>
+                <p>₹{{dish.price}}</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div style="margin-top: 21px; width: 23rem; margin-left: 18px">
+        <!-- <div 
+          data-ac-chart="'bar'" 
+          data-ac-data="data" 
+          data-ac-config="config" 
+          class="chart">
+        </div> -->
+        <div ng-if="isHourly">
+          <label for="">Choose Unit</label>
+          <div style="display: flex; justify-content: space-between">
+            <div>
+              <button class="btn" ng-class="{'btn-primary':quantity}" ng-click="reset('quantity')">
+                Quantity
+              </button>
+            </div>
+            <div>
+              <button class="btn" ng-class="{'btn-primary':count}" ng-click="reset('count')">
+                Count
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between">
+          <div>
+            <h4>Start Date:</h4>
+            <input
+              type="date"
+              ng-model="startDate"
+              id="startDate"
+              name="startDate"
+            />
+          </div>
+          <div>
+            <h4>End Date:</h4>
+            <input type="date" id="endDate" ng-model="endDate" name="endDate" />
+          </div>
+        </div>
+        <div>
+          <div>
+            <div style="margin: 14px 0px">
+              <label for="isHour">Hourly:</label>
+              <input
+                type="checkbox"
+                ng-model="isHourly"
+                ng-value="isHourly"
+                name=""
+                id="isHour"
+              />
+            </div>
+            <div style="margin: 14px 0px">
+              <label for="allItems">All items:</label>
+              <input
+                type="checkbox"
+                ng-model="allItems"
+                ng-value="allItems"
+                name=""
+                id="allItems"
+              />
+            </div>
+          </div>
+
+          <button
+            style="
+              background-color: #8a2b06;
+              border: 1px solid #8a2b06;
+              color: white;
+              padding: 0.25rem 2rem;
+              border-radius: 20px;
+              font-weight: bold;
+            "
+            ng-click="generateReport()"
+          >
+            Generate Report
+          </button>
+        </div>
+        <ul
+          style="
+            margin-top: 2rem;
+            list-style: none;
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            width: max-content;
+            row-gap: 12px;
+            column-gap: 31px;
+          "
+          ng-if="colorDetails.length>0"
+        >
+          <li
+            style="
+              display: flex;
+              align-items: center;
+              column-gap: 10px;
+              justify-content: space-around;
+            "
+            ng-repeat="color in colorDetails|filter:'' track by color.text"
+          >
+            <div
+              style="width: 20px; height: 20px; border-radius: 50%"
+              ng-style="{'background-color':color.style}"
+            ></div>
+            <p style="margin: 0">{{color.text}}</p>
+          </li>
+        </ul>
+        <div
+          zingchart
+          id="chart-1"
+          style="margin-top: 36px; width: 784px"
+          zc-json="myJson"
+          zc-width="608px"
+          zc-height="608px"
+          zc-values="itemsReport"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>

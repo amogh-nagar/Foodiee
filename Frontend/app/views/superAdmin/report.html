@@ -1,0 +1,313 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      width: 79%;
+      left:12rem;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Profile</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left:12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Reports</h3>
+    </div>
+    <div style="display: flex">
+      <div style="width: max-content; margin-top: 31px ;min-width: 336px;">
+        <p style="text-align: center;" ng-if="brands.length==0">No Brands Found</p>
+        <ul
+          style="
+            display: flex;
+            flex-direction: column;
+            width: 21rem;
+            height: 49rem;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 21px;
+            row-gap: 20px;
+          " ng-if="brands.length>0"
+          class="list-unstyled"
+        >
+          <li
+            class="brandListItems d-flex justify-content-between flex-column align-items-center"
+            ng-repeat="brand in brands
+          |filter:{brandStatus:selectedTag}:true track by brand._id"
+            style="
+              height: 82px;
+              width: 300px;
+              display: flex !important;
+              flex-direction: row !important;
+            "
+          >
+            <div
+              style="
+              
+    height: 100%;
+
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+              ng-click="select(brand._id)"
+              ng-class="{'activeCnt':isselected[brand._id]}"
+            >
+              <img
+                style="
+                  width: 55px;
+                  height: 55px;
+                  border-radius: 50%;
+                  position: relative;
+                  left: 11px;
+                "
+                ng-if="!brand.image || brand.image.length==0"
+                src="images/dummy-brandImage.jpg"
+                alt=""
+              />
+              <img
+                style="
+                  width: 55px;
+                  height: 55px;
+                  border-radius: 50%;
+                  position: relative;
+                  left: 11px;
+                "
+                ng-if="brand.image.length>0"
+                ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{brand.image}}"
+                alt=""
+              />
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-end;
+                  position: relative;
+                  right: 21px;
+                "
+              >
+                <h3 style="">{{brand.name}}</h3>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div
+          style="display: flex; align-items: center; justify-content: center"
+        >
+          <ul
+            uib-pagination
+            total-items="totalItems"
+            ng-model="currentPage"
+            items-per-page="itemsPerPage"
+            boundary-links="true"
+            force-ellipses="true"
+            max-size="3"
+            class="pagination-sm"
+          ></ul>
+        </div>
+      </div>
+      <div style="margin-top: 21px; width: 23rem; margin-left: 18px">
+        <!-- <div 
+        data-ac-chart="'bar'" 
+        data-ac-data="data" 
+        data-ac-config="config" 
+        class="chart">
+      </div> -->
+        <div>
+          <label for="">Choose an Option</label>
+          <div style="display: flex; justify-content: space-between">
+            <div>
+              <label for="withDatePick">Choose a Date</label>
+              <input
+                type="checkbox"
+                ng-model="withDatePick"
+                ng-click="reset('withDatePick')"
+                name=""
+                id="withDatePick"
+              />
+            </div>
+            <div>
+              <label for="withoutDatePick">Carry on without date</label>
+              <input
+                type="checkbox"
+                ng-model="withoutDatePick"
+                ng-click="reset('withoutDatePick')"
+                name=""
+                id="withoutDatePick"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between"
+          ng-if="withDatePick"
+        >
+          <div>
+            <h4>Start Date:</h4>
+            <input
+              type="date"
+              ng-model="startDate"
+              id="startDate"
+              name="startDate"
+            />
+          </div>
+          <div>
+            <h4>End Date:</h4>
+            <input type="date" id="endDate" ng-model="endDate" name="endDate" />
+          </div>
+        </div>
+
+        <div style="margin: 14px 0px">
+          <label for="top3Items">Top 3 Items of Each Brand:</label>
+          <input
+            type="checkbox"
+            ng-model="top3Items"
+            ng-value="top3Items"
+            name=""
+            id="top3Items"
+          />
+        </div>
+        <div>
+          <div style="margin: 14px 0px">
+            <label for="isHour">Hourly:</label>
+            <input
+              type="checkbox"
+              ng-model="isHourly"
+              ng-value="isHourly"
+              name=""
+              id="isHour"
+            />
+          </div>
+          <button
+            style="
+              background-color: #8a2b06;
+              border: 1px solid #8a2b06;
+              color: white;
+              padding: 0.25rem 2rem;
+              border-radius: 20px;
+              font-weight: bold;
+            "
+            ng-click="generateReport()"
+          >
+            Generate Report
+          </button>
+        </div>
+
+        <ul
+          style="
+            margin-top: 2rem;
+            list-style: none;
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            width: max-content;
+            row-gap: 12px;
+            column-gap: 31px;
+          "
+          ng-if="colorDetails.length>0"
+        >
+          <li
+            style="
+              display: flex;
+              align-items: center;
+              column-gap: 10px;
+              justify-content: space-around;
+            "
+            ng-repeat="color in colorDetails|filter:'' track by color.text"
+          >
+            <div
+              style="width: 20px; height: 20px; border-radius: 50%"
+              ng-style="{'background-color':color.style}"
+            ></div>
+            <p style="margin: 0">{{color.text}}</p>
+          </li>
+        </ul>
+        <div
+          ng-if="!top3Items"
+          zingchart
+          id="chart-1"
+          style="margin-top: 36px; width: 784px"
+          zc-json="myJson"
+          zc-width="608px"
+          zc-height="608px"
+          zc-values="itemsReport"
+        ></div>
+        <!-- <ul style="list-style: none;" ng-if="top3Items">
+          <li ng-repeat="graph in graphs|filter:'' track by graph.id">
+            <p>{{graph.brandName}}</p> -->
+        <div
+          ng-if="top3Items"
+          zingchart
+          id="mychart1"
+          style="margin-top: 36px; width: 784px"
+          zc-json="myJson"
+          zc-width="608px"
+          zc-height="608px"
+        ></div>
+        <table style="width: max-content;border: 1px solid;margin-top: 20px;" ng-if="top3Items">
+          <tr>
+            <th style="width: 150px;
+            border: 1px solid;
+            padding: 14px;
+        ">Items</th>
+            <th
+              style="    width: 150px;
+                display: flex;
+                align-items: center;
+                column-gap: 17px;
+    border: 1px solid;
+    padding: 14px;
+
+              "
+              colspan="5"
+            >
+              <select
+                ng-options="slot for slot in slots"
+                ng-model="selectedSlot"
+                name=""
+                id=""
+              ></select>
+              <p style="margin: 0">Time</p>
+            </th>
+          </tr>
+          <tr>
+            <th colspan="1"></th>
+
+            <th colspan="1">Item 1</th>
+            <th colspan="1" style="    width: 150px;">Item 2</th>
+            <th colspan="1" style="    width: 150px;">Item 3</th>
+          </tr>
+          <tr
+            ng-repeat="data in datas[selectedSlot] | filter:'' track by $index"
+          >
+            <td>{{data.brandName}}</td>
+            <td ng-repeat="item in data.items | filter:'' track by $index">
+              {{item.name}}
+            </td>
+          </tr>
+        </table>
+        <!-- </li>
+        </ul> -->
+      </div>
+    </div>
+  </div>
+</div>

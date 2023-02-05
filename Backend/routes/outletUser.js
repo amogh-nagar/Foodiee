@@ -3,12 +3,33 @@ const router = express.Router();
 const passport = require("passport");
 const { check } = require("express-validator");
 var checkRole = require("../middleware/check-role");
-const { createUser, updateUser, getUsersOfARole, getUser } = require("../controllers/outlet/outletAdmin/getUserOfARole");
-const { getRolesOfAOutlet, getAllOutletsOfAdmin } = require("../controllers/outlet/outletAdmin/getAllRoles");
-const { createOrder, getOrders, updateOrder, deleteOrder, getOrder } = require("../controllers/outlet/outletUser/outletOrder");
+const {
+  createUser,
+  updateUser,
+  getUsersOfARole,
+  getUser,
+} = require("../controllers/outlet/outletAdmin/getUserOfARole");
+const {
+  getRolesOfAOutlet,
+  getAllOutletsOfAdmin,
+} = require("../controllers/outlet/outletAdmin/getAllRoles");
+const {
+  createOrder,
+  getOrders,
+  updateOrder,
+  deleteOrder,
+  getOrder,
+  getRecommendedDishes,
+} = require("../controllers/outlet/outletUser/outletOrder");
 const checkPermission = require("../middleware/check-permission");
-const { getDishes,getCategories } = require("../controllers/outlet/outletUser/outletDish");
-const { getOutlet, updateOutlet } = require("../controllers/brand/brandUser/brandOutlet");
+const {
+  getDishes,
+  getCategories,
+} = require("../controllers/outlet/outletUser/outletDish");
+const {
+  getOutlet,
+  updateOutlet,
+} = require("../controllers/brand/brandUser/brandOutlet");
 //Outlet Admin
 router.post(
   "/createOutletUser",
@@ -65,7 +86,6 @@ router.patch(
   updateOutlet
 );
 
-
 router.get(
   "/dishes/:outletId",
   passport.authenticate("jwt", { session: false }),
@@ -109,5 +129,11 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   checkPermission("isDeleteOrder"),
   deleteOrder
+);
+router.get(
+  "/recommend/:customerContact/:outletId",
+  passport.authenticate("jwt", { session: false }),
+  checkPermission("isCreateOrder"),
+  getRecommendedDishes
 );
 module.exports = router;

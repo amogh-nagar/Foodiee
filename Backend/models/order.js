@@ -11,6 +11,7 @@ var order = new mongoose.Schema(
           _id:{ type:String, required: true },
           name: { type: String, required: true },
           price: { type: Number, required: true },
+          image:{type:String}
         },
         quantity: { type: Number, required: true, default: 1 },
       },

@@ -1,7 +1,7 @@
 angular
   .module("myApp.services", [])
   .value("version", "0.1")
-  .factory("socket", function ($rootScope, $log,$timeout) {
+  .factory("socket", function ($rootScope, $log) {
     var socket = io.connect("http://127.0.0.1:3000", {
       autoConnect: true,
     });

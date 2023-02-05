@@ -13,13 +13,16 @@ app.service(
           $http({
             method: "GET",
             url:
-              "http://localhost:3000/outlet/getOrders/" + $rootScope.outletId+"?page="+page,
+              "http://localhost:3000/outlet/getOrders/" +
+              $rootScope.outletId +
+              "?page=" +
+              page,
             headers: { Authorization: token },
           })
             .then(function (res) {
-                $log.info(res)
+              $log.info(res);
               $rootScope.orders = res.data.orders;
-                $rootScope.totalItems = res.data.totalItems;
+              $rootScope.totalItems = res.data.totalItems;
               $rootScope.isLoading = false;
               deffered.resolve(
                 res.data != null && res.data.orders != null
@@ -37,38 +40,72 @@ app.service(
 
       return deffered.promise;
     };
-    (this.getCart = function () {
+    (this.getRecommendedDish = (function (contact) {
       var deffered = $q.defer();
-      var res = localStorage.getItem("cart");
-      $rootScope.cart = {};
-      if (res == null) {
-        res = { items: [], totalCartItems: 0, totalCartPrice: 0 };
-      } else {
-        res = JSON.parse(res);
-      }
-      $rootScope.cart.items = res.items;
-      $rootScope.cart.totalCartItems = res.totalCartItems;
-      $rootScope.cart.totalCartPrice = res.totalCartPrice;
-      $log.info($rootScope.cart);
+      var token = localStorage.getItem("token");
+      $rootScope.isLoading = true;
+      $rootScope.outletId = $rootScope.user.entityDetails[0].entityId;
+      $http({
+        method: "GET",
+        url:
+          "http://localhost:3000/outlet/recommend/" +
+          contact +
+          "/" +
+          $rootScope.outletId +
+          "?page=" +
+          0,
+        headers: { Authorization: token },
+      })
+        .then(function (res) {
+          $rootScope.recommendedDishes = res.data.dishes;
+          $log.info($rootScope.recommendedDishes);
+          $rootScope.isLoading = false;
+          return deffered.resolve(
+            res.data != null && res.data.dishes != null ? res.data.dishes : []
+          );
+        })
+        .catch(function (err) {
+          deffered.reject();
+        });
+    })(
+      (this.getCart = function () {
+        var deffered = $q.defer();
+        var res = localStorage.getItem("cart");
+        $rootScope.cart = {};
+        if (res == null) {
+          res = { items: [], totalCartItems: 0, totalCartPrice: 0 };
+        } else {
+          res = JSON.parse(res);
+        }
+        $rootScope.cart.items = res.items;
+        $rootScope.cart.totalCartItems = res.totalCartItems;
+        $rootScope.cart.totalCartPrice = res.totalCartPrice;
+        $log.info($rootScope.cart);
 
-      deffered.resolve(
-        res.data != null && res.data.cart != null ? res.data.cart : []
-      );
+        deffered.resolve(
+          res.data != null && res.data.cart != null ? res.data.cart : []
+        );
 
-      return deffered.promise;
-    }),
+        return deffered.promise;
+      })
+    )),
       (this.getDishes = function (page) {
+        $log.info("Inside service", page);
         var deffered = $q.defer();
         var token = localStorage.getItem("token");
         $rootScope.isLoading = true;
 
         $rootScope.outletId = $rootScope.user.entityDetails[0].entityId;
-        $log.info("OutletId",$rootScope.outletId)
+        $log.info("OutletId", $rootScope.outletId);
         newDebounce.Invoke(
           function () {
             $http({
               method: "GET",
-              url: "http://localhost:3000/outlet/dishes/" + $rootScope.outletId+"?page="+page,
+              url:
+                "http://localhost:3000/outlet/dishes/" +
+                $rootScope.outletId +
+                "?page=" +
+                page,
               headers: { Authorization: token },
             })
               .then(function (res) {
@@ -76,7 +113,7 @@ app.service(
                 $rootScope.outletsDishes = res.data.dishes;
                 //   $rootScope.brandSuperCategories = res.data.brandSuperCategories;
                 //   $rootScope.brandCategories = res.data.brandCategories;
-                  $rootScope.totalItems = res.data.totalItems;
+                $rootScope.totalItems = res.data.totalItems;
                 $rootScope.isLoading = false;
                 deffered.resolve(
                   res.data != null && res.data.dishes != null

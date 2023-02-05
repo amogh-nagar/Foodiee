@@ -50,7 +50,6 @@ angular
       $log,
       $http,
       $location,
-      socket,
       $httpParamSerializerJQLike,
       outletUserServices
     ) {
@@ -174,11 +173,20 @@ angular
       $log,
       $http,
       $httpParamSerializerJQLike,
-      $uibModalInstance
+      $uibModalInstance,
+      outletUserServices,
+      $timeout,
+      order,recommendedDishes
     ) {
+      $scope.isEdit=false;
+      $scope.order = order;
       $scope.cancel = function () {
         $uibModalInstance.dismiss("cancel");
       };
+      $scope.updateEditStatus=function(){
+        $scope.isEdit=!$scope.isEdit;
+      }
+      $scope.changeContact = function () {};
 
       $scope.confirmOrder = function () {
         $http({
@@ -250,11 +258,9 @@ angular
         outletUserServices.getOrders(page);
       }
       $scope.isCollapsed = false;
-      $scope.orderType = "Dine In";
+      $scope.status = "Dine In";
       $scope.updateStatus = function (status) {
-        $scope.orderType = status;
-        $log.info($scope.orderType);
-        $scope.$apply();
+        $scope.status = status;
       };
       $scope.deleteOrder = function (id, parentSelector) {
         var parentElem = parentSelector
@@ -507,12 +513,13 @@ angular
       $http,
       $httpParamSerializerJQLike,
       $uibModalInstance,
-      $uibModal
+      $uibModal,outletUserServices,
+      $q
     ) {
       $scope.order = {};
       $scope.order.type = "Dine In";
       $scope.ok = function (parentSelector) {
-        $uibModalInstance.close()
+        $uibModalInstance.close();
         var parentElem = parentSelector
           ? angular.element(
               $document[0].querySelector(".modal-demo " + parentSelector)
@@ -525,10 +532,18 @@ angular
           templateUrl: "order.html",
           controller: "orderModalController",
           appendTo: parentElem,
-          size: "xl",
+          size: "lg",
+          resolve: {
+            order: function () {
+              return $scope.order;
+            },
+            recommendedDishes: function () {
+             return outletUserServices.getRecommendedDish($scope.order.contact);
+            },
+          },
         });
         modalInstance.result.then(
-          function (status) {},
+          function () {},
           function () {
             $log.info("Modal dismissed at: " + new Date());
           }

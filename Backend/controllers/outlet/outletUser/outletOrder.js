@@ -178,3 +178,77 @@ exports.deleteOrder = function (req, res, next) {
       next(err);
     });
 };
+
+exports.getRecommendedDishes = function (req, res, next) {
+  if (req.query.page) req.query.page = +req.query.page;
+  var skip =
+    req.query.page && req.query.page != "undefined"
+      ? (parseInt(req.query.page) - 1) * itemsPerPage
+      : 0;
+
+  Order.find({ customerContact: +req.params.customerContact }).then(function (
+    orders
+  ) {
+    if (orders.length > 0) {
+      Order.aggregate(
+        [
+          {
+            $match: {
+              customerContact: +req.params.customerContact,
+            },
+          },
+          {
+            $unwind: "$dishes",
+          },
+          {
+            $group: {
+              _id: "$dishes.dishId._id",
+              dish: { $first: "$dishes.dishId" },
+              count: { $sum: "$dishes.quantity" },
+            },
+          },
+          { $skip: skip },
+          { $limit: 4 },
+          { $sort: { count: -1 } },
+        ],
+        function (err, data) {
+          if (err) console.log(err);
+          res.status(200).json({
+            message: "Recommended dishes",
+            dishes: data,
+          });
+        }
+      );
+    } else {
+      Order.aggregate(
+        [
+          {
+            $match: {
+              "outletDetails.id": req.params.outletId,
+            },
+          },
+          {
+            $unwind: "$dishes",
+          },
+          {
+            $group: {
+              _id: "$dishes.dishId._id",
+              dish: { $first: "$dishes.dishId" },
+              count: { $sum: "$dishes.quantity" },
+            },
+          },
+          { $skip: skip },
+          { $limit: 4 },
+          { $sort: { count: -1 } },
+        ],
+        function (err, data) {
+          if (err) console.log(err);
+          res.status(200).json({
+            message: "Recommended dishes",
+            dishes: data,
+          });
+        }
+      );
+    }
+  });
+};

@@ -410,6 +410,99 @@
               <h3 class="modal-title" id="modal-title" >Your Cart!</h3>
           </div>
           <div class="cartmodal-body" id="modal-body">
+            <div>
+              <form action="" name="orderForm" novalidate>
+                  <div class="form-group"   ng-class="{'has-error':orderForm.name.$invalid && (orderForm.name.$dirty || submitted)}"
+                  >
+                      <label style="font-size:23px;    color: black;
+                      font-weight: 700;" for="name">Customer's Name</label>
+            <input
+              ng-change="updateProgress('name')"
+              type="text"
+              name="name"
+              id="name"
+              class="form-control"
+              placeholder="Customer's Name"
+              ng-required="true"
+              ng-model="order.name"
+            />
+            <p
+            ng-show="orderForm.name.$error.required && (orderForm.name.$dirty || submitted)"
+            class="text-danger"
+          >
+            Name is required
+          </p>
+                  </div>
+                  <div class="form-group"   ng-class="{'has-error':orderForm.email.$invalid && (orderForm.email.$dirty || submitted)}"
+                  >
+                      <label style="    color: black;font-size:23px;
+                      font-weight: 700;" for="email">Customer's Email</label>
+            <input
+              ng-change="updateProgress('email')"
+              type="email"
+              name="email"
+              id="email"
+              class="form-control"
+              placeholder="Customer's Email"
+              ng-required="true"
+              ng-model="order.email"
+            />
+            <p
+          ng-show="orderForm.email.$error.required && (orderForm.email.$dirty || submitted)"
+          class="text-danger"
+        >
+          Email is required
+        </p>
+        <p
+          class="text-danger"
+          ng-show="orderForm.email.$error.email && (orderForm.email.$dirty || submitted)"
+        >
+          Enter a valid email
+        </p>
+                  </div>
+                  <div class="form-group"   ng-class="{'has-error':orderForm.contact.$invalid && (orderForm.contact.$dirty || submitted)}"
+                  >
+                      <label style="    color: black;
+                      font-weight: 700;font-size:23px" for="contact">Customer's Contact No.</label>
+            <input
+              ng-change="updateProgress('contact')"
+              type="number"
+              name="contact"
+              id="contact"
+              class="form-control"
+              placeholder="Customer's Contact No."
+              ng-required="true"
+              ng-model="order.contact"
+            />
+           
+            <p
+          ng-show="orderForm.contact.$error.required && (orderForm.contact.$dirty || submitted)"
+          class="text-danger"
+        >
+          ContactNo is required
+        </p>
+                  </div>
+                  <div
+                  style="height: 70px;"
+                  class="form-group d-flex flex-column justify-content-between"
+                >
+                  <label style="    color: black;
+                  font-weight: 700;font-size:23px">Order Type</label>
+                  <div class="d-flex justify-content-between" style="width: 185px">
+                    <button type="button" ng-class="{'btn-primary':order.type=='Dine In','blankBtn':order.type=='Take Over'}"
+                      class="btn d-inline" ng-click="order.type='Dine In'"
+                    >
+                      Dine In
+                    </button>
+
+                    <button type="button" ng-click="order.type='Take Over'" ng-class="{'btn-primary':order.type=='Take Over','blankBtn':order.type=='Dine In'}"  class="btn d-inline"
+                    >
+                      Take Over
+                    </button>
+
+                  </div>
+                </div>
+
               <ul style="padding-left:0;    height: 310px;
               overflow-y: scroll;">
                   <li  class="d-flex justify-content-between align-items-center" ng-repeat="dish in cart.items|filter:'' track by dish.dishId._id">
@@ -422,8 +515,8 @@
                           </div>
                       </div>
                       <div class="addSub">
-                          <button ng-click="addSub('-',dish.dishId._id)">-</button>
-                          <button ng-click="addSub('+',dish.dishId._id)">+</button>
+                          <button type="button" ng-click="addSub('-',dish.dishId._id)">-</button>
+                          <button type="button" ng-click="addSub('+',dish.dishId._id)">+</button>
                       </div>
                   </li>
               </ul>
@@ -452,6 +545,26 @@
           <div class="cartmodal-body" id="modal-body">
               <div>
                   <form action="" name="orderForm" novalidate>
+                    <div class="container-fluid d-flex justify-content-end">
+                      <button
+        ng-if="!isEdit"
+        tooltip-placement="top"
+        uib-tooltip="Update Details"
+        type="button"
+        class="btn btn-warning"
+        ng-click="updateEditStatus()"
+      >
+        <img src="images/edit-icon.png" alt="" style="width: 21px" />
+      </button>
+      <button
+      ng-click="updateEditStatus()"
+      ng-if="isEdit"
+      class="btn cancel mt-4"
+      style="width: 150px; color: white"
+    >
+      Cancel Update
+    </button>
+                    </div>
                       <div class="form-group"   ng-class="{'has-error':orderForm.name.$invalid && (orderForm.name.$dirty || submitted)}"
                       >
                           <label style="font-size:23px;    color: black;
@@ -464,8 +577,9 @@
                   class="form-control"
                   placeholder="Customer's Name"
                   ng-required="true"
-                  ng-model="order.name"
+                  ng-model="order.name" ng-if="isEdit"
                 />
+                <p style="color:black" ng-if="!isEdit">{{order.name}}</p> 
                 <p
                 ng-show="orderForm.name.$error.required && (orderForm.name.$dirty || submitted)"
                 class="text-danger"
@@ -486,7 +600,9 @@
                   placeholder="Customer's Email"
                   ng-required="true"
                   ng-model="order.email"
+                  ng-if="isEdit"
                 />
+                <p style="color:black"  ng-if="!isEdit">{{order.email}}</p>
                 <p
               ng-show="orderForm.email.$error.required && (orderForm.email.$dirty || submitted)"
               class="text-danger"
@@ -513,7 +629,9 @@
                   placeholder="Customer's Contact No."
                   ng-required="true"
                   ng-model="order.contact"
+                  ng-if="isEdit"
                 />
+                <p style="color:black"  ng-if="!isEdit">{{order.contact}}</p>
                 <p
               ng-show="orderForm.contact.$error.required && (orderForm.contact.$dirty || submitted)"
               class="text-danger"
@@ -527,14 +645,15 @@
                     >
                       <label style="    color: black;
                       font-weight: 700;font-size:23px">Order Type</label>
-                      <div class="d-flex justify-content-between" style="width: 185px">
-                        <button type="button" ng-class="{'btn-primary':order.type=='Dine In','blankBtn':order.type=='Take Over'}"
+                      <div class="d-flex justify-content-between" style="width: 200px">
+                        <p style="color:black"  ng-if="!isEdit">{{order.type}}</p>
+                        <button ng-if="isEdit" type="button" ng-class="{'btn-primary':order.type=='Dine In','blankBtn':order.type=='Take Over'}"
                           class="btn d-inline" ng-click="order.type='Dine In'"
                         >
                           Dine In
                         </button>
 
-                        <button type="button" ng-click="order.type='Take Over'" ng-class="{'btn-primary':order.type=='Take Over','blankBtn':order.type=='Dine In'}"  class="btn d-inline"
+                        <button ng-if="isEdit" type="button" ng-click="order.type='Take Over'" ng-class="{'btn-primary':order.type=='Take Over','blankBtn':order.type=='Dine In'}"  class="btn d-inline"
                         >
                           Take Over
                         </button>
@@ -544,10 +663,9 @@
 
                   </form>
               </div>
-              <div style="    margin-top: 3rem;
+              <div style="   
               " class="form-group">
-                  <label style="       position: relative;
-                  top: 2rem; color: black;
+                  <label style="        color: black;
                   font-weight: 700;font-size:23px" for="">Dishes</label>
               <ul style="padding-left:0;    height: 310px;
               overflow-y: scroll;">
@@ -556,7 +674,7 @@
                           <h2>{{dish.dishId.name}}</h2>
                           <div style="    width: 10rem;
                           " class="d-flex justify-content-between align-items-center">
-                              <span class="dishPrice">₹{{dish.dishId.dishPrice}}</span>
+                              <span class="dishPrice">₹{{dish.dishId.price}}</span>
                               <span class="dishQuantity">x {{dish.quantity}}</span>
                           </div>
                       </div>
@@ -576,6 +694,57 @@
                     <h2>₹{{cart.totalCartPrice+taxAmount}}</h2>
                               </div>
                     </div>
+          </div>
+          <div>
+            <ul
+              style="
+                position: relative;
+                top: 14px;
+                display: grid;
+                grid-template-columns: auto auto auto;
+                row-gap: 40px;
+              "
+              ng-if="recommendedDishes.length>0"
+              class="list-unstyled"
+            >
+              <li
+                ng-class="{'deletedDot':dish.isdeleted,'activeDot':!dish.isdeleted && dish.status=='active','inactiveDot':!dish.isdeleted && dish.status=='inactive'}"
+                class="brandListItems d-flex justify-content-between flex-column align-items-center"
+                ng-repeat="dish in recommendedDishes |filter:{superCategory:{id:selectedSuperCategory._id},category:{id:selectedCategory._id}} track by dish._id"
+                style="width: 260px; height: 260px; position: relative"
+              >
+                <!-- <img
+                  style="position: absolute; width: 260px; border-radius: 31px"
+                  ng-if="!dish.image || dish.dishImage.length==0"
+                  src="images/dummy-dishImage.jpg"
+                  ng-click="goToDish(dish._id)"
+                  alt=""
+                />
+                <img
+                  ng-click="goToDish(dish._id)"
+                  style="position: absolute; width: 260px; border-radius: 31px"
+                  ng-if="dish.image.length>0"
+                  ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.image}}"
+                  alt=""
+                /> -->
+                <div 
+                  class="d-flex align-items-center justify-content-center flex-column"
+                  style="
+                    z-index: 100;
+                    position: absolute;
+                    bottom: 0;
+                    background-color: #ad4d27;
+                    width: 100%;
+                    border-radius: 0px 0px 31px 31px;
+                    padding-top: 10px;
+                  "
+                >
+                  <h3 ng-click="goToDish(dish._id)" style="">{{dish.dish.name}}</h3>
+                  <p>₹{{dish.dish.price}}</p>
+                </div>
+              </li>
+            </ul>
+        
           </div>
           <div class="cartmodal-footer">
               <button class="btn btn-primary" style="margin-right:16px" type="button" ng-click="confirmOrder()">Confirm!</button>

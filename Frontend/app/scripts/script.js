@@ -11,7 +11,6 @@ var app = angular
     "oi.select",
   ])
   .config(function ($stateProvider) {
-    
     $stateProvider
       .state("login", {
         url: "/login",
@@ -41,7 +40,16 @@ var app = angular
   });
 app.controller(
   "Index",
-  function ($scope, $http, $log, $rootScope, $location, $uibModal, socket,$timeout) {
+  function (
+    $scope,
+    $http,
+    $log,
+    $rootScope,
+    $location,
+    $uibModal,
+    socket,
+    $timeout
+  ) {
     $scope.logout = function () {
       $rootScope.signin = false;
       $location.path("/login");
@@ -54,33 +62,16 @@ app.controller(
     socket.on("connect", function () {
       $log.info("Connected to Socket");
     });
-    
-    $scope.animationsEnabled = true;
-    $scope.openCart = function (parentSelector) {
-      if ($rootScope.cart.totalCartItems == 0) {
+    $scope.goToCart = function () {
+      if (
+        !$rootScope.cart ||
+        !$rootScope.cart.items ||
+        $rootScope.cart.items.length === 0
+      )
         return;
-      }
-      var parentElem = parentSelector
-        ? angular.element(
-            $document[0].querySelector(".modal-demo " + parentSelector)
-          )
-        : undefined;
-      var modalInstance = $uibModal.open({
-        animation: true,
-        ariaLabelledBy: "modal-title",
-        ariaDescribedBy: "modal-body",
-        templateUrl: "cart.html",
-        controller: "cartModalController",
-        appendTo: parentElem,
-        size: "lg",
-      });
-      modalInstance.result.then(
-        function (status) {},
-        function () {
-          $log.info("Modal dismissed at: " + new Date());
-        }
-      );
+      $location.path("/cart");
     };
+    $scope.animationsEnabled = true;
   }
 );
 app
@@ -252,14 +243,14 @@ app.factory(
   }
 );
 
-app.directive("selectNgFiles", function() {
+app.directive("selectNgFiles", function () {
   return {
     require: "ngModel",
-    link: function postLink(scope,elem,attrs,ngModel) {
-      elem.on("change", function(e) {
+    link: function postLink(scope, elem, attrs, ngModel) {
+      elem.on("change", function (e) {
         var files = elem[0].files;
         ngModel.$setViewValue(files);
-      })
-    }
-  }
+      });
+    },
+  };
 });

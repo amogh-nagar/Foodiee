@@ -1,6 +1,6 @@
 app.service(
   "outletUserServices",
-  function ($q, $http, $location, $rootScope, $log, reactService) {
+  function ($q, $http, $location, $rootScope, $log, reactService,$httpParamSerializerJQLike) {
     var newDebounce = new reactService.Debounce();
     this.getOrders = function (page) {
       var deffered = $q.defer();
@@ -40,20 +40,21 @@ app.service(
 
       return deffered.promise;
     };
-    (this.getRecommendedDish = (function (contact) {
+    this.getRecommendedDish = function () {
       var deffered = $q.defer();
       var token = localStorage.getItem("token");
       $rootScope.isLoading = true;
       $rootScope.outletId = $rootScope.user.entityDetails[0].entityId;
+      var dishIds=$rootScope.cart.items.map(function (dish) {
+        return dish.dishId._id;
+      })
+      $log.info("dishIds",dishIds)
       $http({
-        method: "GET",
-        url:
-          "http://localhost:3000/outlet/recommend/" +
-          contact +
-          "/" +
-          $rootScope.outletId +
-          "?page=" +
-          0,
+        method: "POST",
+        url: "http://localhost:3000/outlet/recommend/",
+        data: {
+          dishIds: dishIds,
+        },
         headers: { Authorization: token },
       })
         .then(function (res) {
@@ -67,69 +68,69 @@ app.service(
         .catch(function (err) {
           deffered.reject();
         });
-    })(
-      (this.getCart = function () {
-        var deffered = $q.defer();
-        var res = localStorage.getItem("cart");
-        $rootScope.cart = {};
-        if (res == null) {
-          res = { items: [], totalCartItems: 0, totalCartPrice: 0 };
-        } else {
-          res = JSON.parse(res);
-        }
-        $rootScope.cart.items = res.items;
-        $rootScope.cart.totalCartItems = res.totalCartItems;
-        $rootScope.cart.totalCartPrice = res.totalCartPrice;
-        $log.info($rootScope.cart);
+    };
+    this.getCart = function () {
+      var deffered = $q.defer();
+      var res = localStorage.getItem("cart");
+      $rootScope.cart = {};
+      if (res == null) {
+        res = { items: [], totalCartItems: 0, totalCartPrice: 0 };
+      } else {
+        res = JSON.parse(res);
+      }
+      $rootScope.cart.items = res.items;
+      $rootScope.cart.totalCartItems = res.totalCartItems;
+      $rootScope.cart.totalCartPrice = res.totalCartPrice;
+      $log.info($rootScope.cart);
 
-        deffered.resolve(
-          res.data != null && res.data.cart != null ? res.data.cart : []
-        );
+      deffered.resolve(
+        res.data != null && res.data.cart != null ? res.data.cart : []
+      );
 
-        return deffered.promise;
-      })
-    )),
-      (this.getDishes = function (page) {
-        $log.info("Inside service", page);
-        var deffered = $q.defer();
-        var token = localStorage.getItem("token");
-        $rootScope.isLoading = true;
+      return deffered.promise;
+    };
 
-        $rootScope.outletId = $rootScope.user.entityDetails[0].entityId;
-        $log.info("OutletId", $rootScope.outletId);
-        newDebounce.Invoke(
-          function () {
-            $http({
-              method: "GET",
-              url:
-                "http://localhost:3000/outlet/dishes/" +
-                $rootScope.outletId +
-                "?page=" +
-                page,
-              headers: { Authorization: token },
+    this.getDishes = function (page) {
+      $log.info("Inside service", page);
+      var deffered = $q.defer();
+      var token = localStorage.getItem("token");
+      $rootScope.isLoading = true;
+
+      $rootScope.outletId = $rootScope.user.entityDetails[0].entityId;
+      $log.info("OutletId", $rootScope.outletId);
+      newDebounce.Invoke(
+        function () {
+          $http({
+            method: "GET",
+            url:
+              "http://localhost:3000/outlet/dishes/" +
+              $rootScope.outletId +
+              "?page=" +
+              page,
+            headers: { Authorization: token },
+          })
+            .then(function (res) {
+              $log.info(res);
+              $rootScope.outletsDishes = res.data.dishes;
+              //   $rootScope.brandSuperCategories = res.data.brandSuperCategories;
+              //   $rootScope.brandCategories = res.data.brandCategories;
+              $rootScope.totalItems = res.data.totalItems;
+              $rootScope.isLoading = false;
+              deffered.resolve(
+                res.data != null && res.data.dishes != null
+                  ? res.data.dishes
+                  : []
+              );
             })
-              .then(function (res) {
-                $log.info(res);
-                $rootScope.outletsDishes = res.data.dishes;
-                //   $rootScope.brandSuperCategories = res.data.brandSuperCategories;
-                //   $rootScope.brandCategories = res.data.brandCategories;
-                $rootScope.totalItems = res.data.totalItems;
-                $rootScope.isLoading = false;
-                deffered.resolve(
-                  res.data != null && res.data.dishes != null
-                    ? res.data.dishes
-                    : []
-                );
-              })
-              .catch(function (err) {
-                deffered.reject();
-              });
-          },
-          1000,
-          false
-        );
+            .catch(function (err) {
+              deffered.reject();
+            });
+        },
+        1000,
+        false
+      );
 
-        return deffered.promise;
-      });
+      return deffered.promise;
+    };
   }
 );

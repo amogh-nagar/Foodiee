@@ -130,10 +130,10 @@ router.delete(
   checkPermission("isDeleteOrder"),
   deleteOrder
 );
-router.get(
-  "/recommend/:customerContact/:outletId",
+router.post(
+  "/recommend",
   passport.authenticate("jwt", { session: false }),
-  checkPermission("isCreateOrder"),
+  checkPermission("isReadOutletDishes"),
   getRecommendedDishes
 );
 module.exports = router;

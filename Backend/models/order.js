@@ -34,4 +34,6 @@ var order = new mongoose.Schema(
   { timestamps: true }
 );
 
+// order.createIndex( { "dishes.dishId._id": 1 } )
+
 module.exports = mongoose.model("Order", order);

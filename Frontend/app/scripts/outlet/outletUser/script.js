@@ -40,6 +40,23 @@ angular
             return outletUserServices.getCart();
           },
         },
+      })
+      .state("cart", {
+        url: "/cart",
+        templateUrl: "views/outlet/outletUser/cart.html",
+        controller: "cartPageController",
+        resolve: {
+          checkAuth: function (isSignIn) {
+            return isSignIn.checkAuthentication();
+          },
+
+          checkPermission: function (checkPermission) {
+            return checkPermission.check(["isReadOutletDishes"]);
+          },
+          recommendedDishes: function (outletUserServices) {
+            return outletUserServices.getRecommendedDish(0);
+          },
+        },
       });
   })
   .controller(
@@ -166,6 +183,86 @@ angular
     }
   )
   .controller(
+    "cartPageController",
+    function (
+      $scope,
+      $rootScope,
+      $log,
+      $http,
+      $uibModal,
+      $httpParamSerializerJQLike,
+      $rootScope,
+      $location,outletUserServices
+    ) {
+      $scope.submitHandler = function (
+        dishId,
+        dishName,
+        dishPrice,
+        amount,
+        taxes
+      ) {
+        if (!amount) return;
+        var idx = $rootScope.cart.items.findIndex(function (item) {
+          return item.dishId._id == dishId;
+        });
+        if (idx >= 0) {
+          $rootScope.cart.items[idx].quantity += +amount;
+        } else
+          $rootScope.cart.items.push({
+            dishId: {
+              _id: dishId,
+              name: dishName,
+              price: dishPrice,
+              taxes: taxes,
+            },
+            quantity: +amount,
+          });
+        $rootScope.cart.totalCartItems += +amount;
+        $rootScope.cart.totalCartPrice += +amount * dishPrice;
+        $log.info($rootScope.cart);
+        localStorage.setItem("cart", JSON.stringify($rootScope.cart));
+      };
+      // $scope.$watch("$root.cart",function(){
+      //   outletUserServices.getRecommendedDish().then(function(response){})
+      // })
+      $scope.dishesAddSub = {};
+      $scope.addSub = function (sign, dishId) {
+        $log.info(sign, dishId);
+        if ($scope.dishesAddSub[`${dishId}`] === undefined)
+          $scope.dishesAddSub[`${dishId}`] = 0;
+        if (sign == "+") $scope.dishesAddSub[`${dishId}`]++;
+        else if (sign == "-" && $scope.dishesAddSub[`${dishId}`] > 0)
+          $scope.dishesAddSub[`${dishId}`]--;
+        $log.info($scope.dishesAddSub);
+      };
+      $scope.openCart = function (parentSelector) {
+        if ($rootScope.cart.totalCartItems == 0) {
+          return;
+        }
+        var parentElem = parentSelector
+          ? angular.element(
+              $document[0].querySelector(".modal-demo " + parentSelector)
+            )
+          : undefined;
+        var modalInstance = $uibModal.open({
+          animation: true,
+          ariaLabelledBy: "modal-title",
+          ariaDescribedBy: "modal-body",
+          templateUrl: "cart.html",
+          controller: "cartModalController",
+          appendTo: parentElem,
+          size: "lg",
+        });
+        modalInstance.result.then(
+          function (status) {},
+          function () {
+            $log.info("Modal dismissed at: " + new Date());
+          }
+        );
+      };
+    }
+  )
+  .controller(
     "orderModalController",
     function (
       $scope,
@@ -176,16 +273,16 @@ angular
       $uibModalInstance,
       outletUserServices,
       $timeout,
-      order,recommendedDishes
+      order
     ) {
-      $scope.isEdit=false;
+      $scope.isEdit = false;
       $scope.order = order;
       $scope.cancel = function () {
         $uibModalInstance.dismiss("cancel");
       };
-      $scope.updateEditStatus=function(){
-        $scope.isEdit=!$scope.isEdit;
-      }
+      $scope.updateEditStatus = function () {
+        $scope.isEdit = !$scope.isEdit;
+      };
       $scope.changeContact = function () {};
 
       $scope.confirmOrder = function () {
@@ -215,6 +312,7 @@ angular
             $rootScope.cart.items = [];
             $rootScope.cart.totalCartItems = 0;
             $rootScope.cart.totalCartPrice = 0;
+
             localStorage.setItem("cart", JSON.stringify($rootScope.cart));
 
             $uibModalInstance.close();
@@ -466,6 +564,7 @@ angular
             $scope.order.dishes[idx].quantity--;
           } else {
             $scope.order.dishes[idx].quantity--;
+            $scope.order.dishes.splice(idx, 1);
           }
         }
         $scope.order.orderPrice +=
@@ -513,7 +612,8 @@ angular
       $http,
       $httpParamSerializerJQLike,
       $uibModalInstance,
-      $uibModal,outletUserServices,
+      $uibModal,
+      outletUserServices,
       $q
     ) {
       $scope.order = {};
@@ -537,9 +637,6 @@ angular
             order: function () {
               return $scope.order;
             },
-            recommendedDishes: function () {
-             return outletUserServices.getRecommendedDish($scope.order.contact);
-            },
           },
         });
         modalInstance.result.then(
@@ -551,6 +648,7 @@ angular
       };
       $rootScope.taxAmount = 0;
       $rootScope.cart.items.forEach((item) => {
+        if(!item.dishId.taxes)return;
         item.dishId.taxes.forEach((tax) => {
           $rootScope.taxAmount +=
             ((tax.percentAmount * item.dishId.price) / 100) * item.quantity;
@@ -585,6 +683,7 @@ angular
             );
           } else {
             $rootScope.cart.items[idx].quantity--;
+            $rootScope.cart.items.splice(idx, 1);
             $scope.deleteFromCart(dishId);
           }
         }

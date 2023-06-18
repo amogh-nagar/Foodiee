@@ -185,70 +185,57 @@ exports.getRecommendedDishes = function (req, res, next) {
     req.query.page && req.query.page != "undefined"
       ? (parseInt(req.query.page) - 1) * itemsPerPage
       : 0;
-
-  Order.find({ customerContact: +req.params.customerContact }).then(function (
-    orders
-  ) {
-    if (orders.length > 0) {
-      Order.aggregate(
-        [
-          {
-            $match: {
-              customerContact: +req.params.customerContact,
-            },
-          },
-          {
-            $unwind: "$dishes",
-          },
-          {
-            $group: {
-              _id: "$dishes.dishId._id",
-              dish: { $first: "$dishes.dishId" },
-              count: { $sum: "$dishes.quantity" },
-            },
-          },
-          { $skip: skip },
-          { $limit: 4 },
-          { $sort: { count: -1 } },
-        ],
-        function (err, data) {
-          if (err) console.log(err);
-          res.status(200).json({
-            message: "Recommended dishes",
-            dishes: data,
-          });
-        }
-      );
-    } else {
-      Order.aggregate(
-        [
-          {
-            $match: {
-              "outletDetails.id": req.params.outletId,
-            },
-          },
-          {
-            $unwind: "$dishes",
-          },
-          {
-            $group: {
-              _id: "$dishes.dishId._id",
-              dish: { $first: "$dishes.dishId" },
-              count: { $sum: "$dishes.quantity" },
-            },
-          },
-          { $skip: skip },
-          { $limit: 4 },
-          { $sort: { count: -1 } },
-        ],
-        function (err, data) {
-          if (err) console.log(err);
-          res.status(200).json({
-            message: "Recommended dishes",
-            dishes: data,
-          });
-        }
-      );
-    }
+  var condStage = [];
+  req.body.dishIds.forEach(function (dish) {
+    condStage.push({ $ne: ["$$dish.dishId._id", dish] });
   });
+  Order.aggregate(
+    [
+      {
+        $project: {
+          dishes: 1,
+        },
+      },
+      {
+        $match: {
+          "dishes.dishId._id": { $in: req.body.dishIds },
+        },
+      },
+      {
+        $project: {
+          dishes: {
+            $filter: {
+              input: "$dishes",
+              as: "dish",
+              cond: { $and: condStage },
+            },
+          },
+        },
+      },
+      {
+        $unwind: "$dishes",
+      },
+      {
+        $group: {
+          _id: "$dishes.dishId._id",
+          dish: { $first: "$dishes.dishId" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+      {
+        $limit: 4,
+      },
+    ],
+    function (err, data) {
+      res.status(200).json({
+        message: "Recommended Dishes Fetched",
+        dishes: data,
+      });
+    }
+  );
 };

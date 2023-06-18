@@ -1,0 +1,194 @@
+<div>
+  <div class="main-image">
+    <img src="images/meals.jpg" alt="A table full of delicious food!" />
+  </div>
+  <div
+    class="position-absolute container-fluid"
+    style="
+      left: 12rem;
+      width: 79%;
+      height: 3rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      top: 8rem;
+      background-color: #2e2828;
+    "
+  >
+    <h3 class="position-absolute top-5">Your Cart</h3>
+  </div>
+  <div
+    style="
+      position: relative;
+      bottom: 15rem;
+      width: 79%;
+      left: 12rem;
+      padding: 26px 1.5rem;
+      border-radius: 25px;
+      margin-left: 2rem;
+      background-color: #2e2828;
+    "
+  >
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="ml-2">Your Brand's Dishes</h3>
+      <button
+        ng-if="signin && permissions.includes('isCreateOrder')"
+        ng-click="openCart()"
+        ng-class="{'bump':isAddToCart}"
+        class="cartBtn d-flex justify-content-around align-items-center"
+      >
+        <span>Order Now</span>
+      </button>
+    </div>
+    <div style="display: flex; align-items: flex-start">
+      <ul
+        style="
+          min-width: 552px;
+          width: 552px;
+          list-style: none;
+          margin: 1rem;
+          padding: 0;
+          display: grid;
+          row-gap: 19px;
+        "
+      >
+        <li
+          style="width: 552px"
+          class="cardItems"
+          ng-repeat="dish in cart.items |filter:'' track by dish.dishId._id"
+        >
+          <div class="outletListItems">
+            <div class="d-flex justify-content-between align-items-center">
+              <img
+                style="width: 115px; border-radius: 50%"
+                ng-if="!dish.dishId.image || dish.dishId.image.length==0"
+                src="images/dummy-dishImage.jpg"
+                alt=""
+              />
+              <img
+                style="width: 115px; border-radius: 50%; height: 115px"
+                ng-if="dish.dishId.image.length>0"
+                ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.dishId.image}}"
+                alt=""
+              />
+              <div style="margin-left: 19px">
+                <div class="dishDetails">
+                  <h2>{{dish.dishId.name}}</h2>
+                  <div
+                    style="width: 17rem"
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <span class="dishPrice">₹{{dish.dishId.price}}</span>
+                    <span class="dishQuantity">x {{dish.quantity}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div>
+        <h2 style="margin-left: 15px">Recommedation</h2>
+        <p style="margin-top: -6px; margin-left: 15px">
+          Based on the items in your cart
+        </p>
+        <ul
+          style="
+            list-style: none;
+            margin: 1rem;
+            padding: 0;
+            display: grid;
+            row-gap: 19px;
+          "
+        >
+          <li
+            style="
+              width: max-content;
+              background-color: #e1c8c8;
+              border-radius: 14px;
+              padding: 9px 9px;
+            "
+            ng-repeat="dish in recommendedDishes|filter:'' track by dish.dish._id"
+          >
+            <div>
+              <div class="d-flex justify-content-between align-items-center">
+                <img
+                  style="width: 115px; border-radius: 50%"
+                  ng-if="!dish.dish.image || dish.dish.image.length==0"
+                  src="images/dummy-dishImage.jpg"
+                  alt=""
+                />
+                <img
+                  style="width: 115px; border-radius: 50%; height: 115px"
+                  ng-if="dish.dish.image.length>0"
+                  ng-src="https://foodorderingaws.s3.ap-south-1.amazonaws.com/{{dish.dish.image}}"
+                  alt=""
+                />
+                <div style="margin-left: 19px; width: 189px">
+                  <div class="dishDetails">
+                    <h2>{{dish.dish.name}}</h2>
+                    <div
+                      style="width: 17rem"
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <span class="dishPrice">₹{{dish.dish.price}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin: 1rem">
+                <form style="    display: flex;
+                align-items: center;
+                justify-content: space-between;" class="form">
+                  <div style="margin-bottom: 0;" class="input">
+                    <div class="addSub">
+                      <button
+                        style="padding: 0; width: 44px; height: 33px"
+                        ng-click="addSub('-',dish.dish._id)"
+                      >
+                        -
+                      </button>
+                      <span class="dishQuantity"
+                        >{{dishesAddSub[dish.dish._id]?dishesAddSub[dish.dish._id]:0}}</span
+                      >
+                      <button
+                        style="padding: 0; width: 44px; height: 33px"
+                        ng-click="addSub('+',dish.dish._id)"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    ng-click="submitHandler(dish.dish._id,dish.dish.name,dish.dish.price,dishesAddSub[dish.dish._id]?dishesAddSub[dish.dish._id]:0,dish.dish.taxes)"
+                  >
+                    + Add
+                  </button>
+                </form>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      style="
+        margin-top: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <ul
+        uib-pagination
+        total-items="totalItems"
+        ng-model="currentPage"
+        items-per-page="itemsPerPage"
+        boundary-links="true"
+        force-ellipses="true"
+        max-size="5"
+        class="pagination-sm"
+      ></ul>
+    </div>
+  </div>
+</div>

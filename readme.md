@@ -1,4 +1,4 @@
-# Foodie
+# Foodiee
 A complete POS based Application with Bunch of Features
 
 ## Main Features
